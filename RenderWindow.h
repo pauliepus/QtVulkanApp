@@ -8,7 +8,7 @@
 #include "VkTriangle.h"
 #include "VkTrianglesurface.h"
 #include "VisualObject.h"
-#include "VkTriangleSurface.h"
+#include "VkTrianglesurface.h"
 
 class RenderWindow : public QVulkanWindowRenderer
 {
@@ -83,9 +83,6 @@ private:
     //VkBuffer& buffer,
     //VkDeviceMemory& bufferMemory) ;
     VkCamera mCamera;
-    //VkDevice logicalDevice;
-    //VkPipelineInputAssemblyStateCreateInfo ia;
-    //VkGraphicsPipelineCreateInfo pipelineInfo;
 };
 
 #endif // RENDERWINDOW_H

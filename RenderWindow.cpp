@@ -29,8 +29,8 @@ RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
     mObjects.push_back(new VkTriangle());
     mObjects.push_back((new VkTriangleSurface()));
     // Dag 030225
-    mObjects.at(0)->setName("triangel");
-    mObjects.at(1)->setName("surf");
+    mObjects.at(0)->setName("tr");
+    mObjects.at(1)->setName("sr");
     // **************************************
     // Legger inn objekter i map
     // **************************************

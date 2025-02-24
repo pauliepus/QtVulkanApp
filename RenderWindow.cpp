@@ -33,7 +33,7 @@ RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
     // Dag 030225
     mObjects.at(0)->setName("tr");
     mObjects.at(1)->setName("sr");
-//    mObjects.at(2)-<setName("sq");
+    mObjects.at(2)->setName("sq");
     // **************************************
     // Legger inn objekter i map
     // **************************************

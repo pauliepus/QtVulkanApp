@@ -1,6 +1,7 @@
 #include "VkTriangleSurface.h"
 #include <fstream>
 #include <QDebug>
+
 VkTriangleSurface::VkTriangleSurface() : VisualObject()
 {
     Vertex v1{0.0f,   0.0f,  0.0f,   1.0f, 0.0f, 0.0f, 0.0f, 0.0f};
@@ -20,6 +21,7 @@ VkTriangleSurface::VkTriangleSurface() : VisualObject()
 
     mMatrix.scale(0.5f);
     mMatrix.translate(0.5f, 0, 0); // fra startNextFrame
+
 }
 
 VkTriangleSurface::VkTriangleSurface(const std::string &filename)

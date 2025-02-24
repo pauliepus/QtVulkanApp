@@ -14,3 +14,5 @@ VkTriangle::VkTriangle() : VisualObject()
 
     mMatrix.translate(-0.25f, 0, 0); // fra startNextFrame
 }
+
+

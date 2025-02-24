@@ -1,4 +1,5 @@
 #include "RenderWindow.h"
+#include "vkcube.h"
 #include <QVulkanFunctions>
 #include <QFile>
 
@@ -28,9 +29,11 @@ RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
     // Dag 230125
     mObjects.push_back(new VkTriangle());
     mObjects.push_back((new VkTriangleSurface()));
+    mObjects.push_back(new VkCube());
     // Dag 030225
     mObjects.at(0)->setName("tr");
     mObjects.at(1)->setName("sr");
+//    mObjects.at(2)-<setName("sq");
     // **************************************
     // Legger inn objekter i map
     // **************************************
@@ -255,7 +258,7 @@ void RenderWindow::startNextFrame()
     const QSize sz = mWindow->swapChainImageSize();
     //qDebug() << "startNextFrame()";
     //Backtgound color of the render window - dark grey
-    VkClearColorValue clearColor = {{ 0.3, 0.3, 0.3, 1 }};
+    VkClearColorValue clearColor = {{ 0.9, 0.45, 0.05, 1 }};
 
     VkClearDepthStencilValue clearDS = { 1, 0 };
     VkClearValue clearValues[3];

@@ -19,8 +19,8 @@ VkTriangleSurface::VkTriangleSurface() : VisualObject()
     mVertices.push_back(v2);
     mVertices.push_back(v4);
 
-    mMatrix.scale(0.5f);
-    mMatrix.translate(0.5f, 0, 0); // fra startNextFrame
+    //  mMatrix.scale(0.5f);
+    // mMatrix.translate(0.5f, 0, 0); // fra startNextFrame
 
 }
 

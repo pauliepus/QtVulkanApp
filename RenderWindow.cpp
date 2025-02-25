@@ -1,5 +1,5 @@
 #include "RenderWindow.h"
-#include "vkcube.h"
+#include "VkCube.h"
 #include <QVulkanFunctions>
 #include <QFile>
 
@@ -27,13 +27,15 @@ RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
         }
     }
     // Dag 230125
-    mObjects.push_back(new VkTriangle());
-    mObjects.push_back((new VkTriangleSurface()));
-    mObjects.push_back(new VkCube());
+    // mObjects.push_back(new VkTriangle());
+   // mObjects.push_back((new VkTriangleSurface()));
+    mObjects.push_back((new VkCube()));
+
     // Dag 030225
     mObjects.at(0)->setName("tr");
     mObjects.at(1)->setName("sr");
-    mObjects.at(2)->setName("sq");
+   // mObjects.at(2)->setName("sq");
+
     // **************************************
     // Legger inn objekter i map
     // **************************************
@@ -300,7 +302,9 @@ void RenderWindow::startNextFrame()
     {
         mDeviceFunctions->vkCmdBindVertexBuffers(cmdBuf, 0, 1, &(*it)->mBuffer, &vbOffset);
         setModelMatrix(mCamera.cMatrix() * (*it)->mMatrix);
-        mDeviceFunctions->vkCmdDraw(cmdBuf, (*it)->mVertices.size(), 1, 0, 0);
+        mDeviceFunctions->vkCmdDrawIndexed(cmdBuf, (*it)->mVertices.size(), 1,0,0);
+
+        // Default cmdDraw mDeviceFunctions->vkCmdDraw(cmdBuf, (*it)->mVertices.size(), 1, 0, 0);
     }
     // Alternativt draw kall ved å traversere unordered map
     /*    for (auto it=mMap.begin(); it!=mMap.end(); it++)

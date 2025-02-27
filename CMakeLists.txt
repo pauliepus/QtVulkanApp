@@ -17,6 +17,7 @@ qt_add_executable(QtVulkanApp
     VkCamera.h VkCamera.cpp
     VkTriangle.h VkTriangle.cpp
     VkCube.h VkCube.cpp
+    VkPlayerCharacter.h VkPlayerCharacter.cpp
 )
 # Define the shader files
 set(SHADER_FILES

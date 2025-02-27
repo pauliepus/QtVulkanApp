@@ -1,5 +1,6 @@
 #include "RenderWindow.h"
 #include "VkCube.h"
+#include "Vertex.h"
 #include <QVulkanFunctions>
 #include <QFile>
 
@@ -302,9 +303,9 @@ void RenderWindow::startNextFrame()
     {
         mDeviceFunctions->vkCmdBindVertexBuffers(cmdBuf, 0, 1, &(*it)->mBuffer, &vbOffset);
         setModelMatrix(mCamera.cMatrix() * (*it)->mMatrix);
-        mDeviceFunctions->vkCmdDrawIndexed(cmdBuf, (*it)->mVertices.size(), 1,0,0);
+       // mDeviceFunctions->vkCmdDrawIndexed(cmdBuf,cubeIndices.size(), 1, 0, 0, 0);
 
-        // Default cmdDraw mDeviceFunctions->vkCmdDraw(cmdBuf, (*it)->mVertices.size(), 1, 0, 0);
+        cmdDraw mDeviceFunctions;->vkCmdDraw(cmdBuf, (*it)->mVertices.size(), 1, 0, 0);
     }
     // Alternativt draw kall ved å traversere unordered map
     /*    for (auto it=mMap.begin(); it!=mMap.end(); it++)

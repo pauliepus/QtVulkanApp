@@ -3,15 +3,15 @@
 
 VkCube::VkCube() {
 
-    VkTriangleSurface Top;
-    VkTriangleSurface Middle;
-    VkTriangleSurface LeftMiddle;
-    VkTriangleSurface RightMiddle;
-    VkTriangleSurface UnderMiddle;
-    VkTriangleSurface Bottom;
+    // VkTriangleSurface Top;
+    // VkTriangleSurface Middle;
+    // VkTriangleSurface LeftMiddle;
+    // VkTriangleSurface RightMiddle;
+    // VkTriangleSurface UnderMiddle;
+    // VkTriangleSurface Bottom;
 
-    Top.rotate(1.0f,1.0f,0.0f,0.0f); //makes flat
-    Top.move(0.0f,1.0f,0.0f); // moves to top.
+    // Top.rotate(1.0f,1.0f,0.0f,0.0f); //makes flat
+    // Top.move(0.0f,1.0f,0.0f); // moves to top.
 
     //VisualObject::mVertices+=Top.getVertices();
 

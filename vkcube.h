@@ -7,6 +7,7 @@ class VkCube : public VisualObject
 {
 public:
     VkCube();
+
 };
 
 #endif // VKCUBE_H

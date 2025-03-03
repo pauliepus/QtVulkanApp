@@ -1,10 +1,14 @@
 #ifndef CUBE_H
 #define CUBE_H
 
-class Cube
+#include "VisualObject.h"
+
+
+class Cube : VisualObject
 {
 public:
     Cube();
+
 };
 
 #endif // CUBE_H

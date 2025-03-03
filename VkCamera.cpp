@@ -27,7 +27,7 @@ void VkCamera::translate(float dx, float dy, float dz)
 {
     mViewMatrix.translate(dx, dy, dz);
     //Flip projection because of Vulkan's -Y axis
-    // mViewMatrix.scale(1.0f, -1.0f, 1.0f);
+    //example from above mViewMatrix.scale(1.0f, -1.0f, 1.0f);
 }
 
 void VkCamera::rotate(float t, float x, float y, float z)

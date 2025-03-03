@@ -4,10 +4,11 @@
 #include "VisualObject.h"
 #include "IKeyState.h"
 
-class PlayerCharacter : VisualObject
+class PlayerCharacter : public VisualObject, IKeystate
 {
 public:
     PlayerCharacter();
+
 
 };
 

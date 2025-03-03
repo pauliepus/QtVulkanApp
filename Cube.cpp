@@ -1,4 +1,4 @@
-#include "VkCube.h"
+#include "Cube.h"
 
 VkCube::VkCube() {
 

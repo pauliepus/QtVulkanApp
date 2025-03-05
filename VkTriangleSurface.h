@@ -8,8 +8,9 @@
 class VkTriangleSurface : public VisualObject
 {
 public:
-    //std::vector<Vertex> mVertices;
+    std::vector<Vertex> mVertices;
     //std::vector<Vertex> getVertices() { return mVertices; }
+
     VkTriangleSurface();
     VkTriangleSurface(const std::string& filename);
 };

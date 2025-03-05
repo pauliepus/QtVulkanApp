@@ -13,6 +13,7 @@ VisualObject::VisualObject()
     //mVertices.push_back(v3);
     //mVertices.push_back(v2);
     //mVertices.push_back(v4);
+
     mMatrix.setToIdentity();
 }
 

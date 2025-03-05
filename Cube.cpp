@@ -1,6 +1,6 @@
 #include "Cube.h"
 
-VkCube::VkCube() {
+Cube::Cube() {
 
 
 }

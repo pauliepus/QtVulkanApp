@@ -15,6 +15,7 @@ qt_add_executable(QtVulkanApp
     VisualObject.h VisualObject.cpp
     Vertex.h Vertex.cpp
     Camera.h Camera.cpp
+    PKPlayerCharacter.h PKPlayerCharacter.cpp
     Triangle.h Triangle.cpp
     Input.h
     WorldAxis.h WorldAxis.cpp

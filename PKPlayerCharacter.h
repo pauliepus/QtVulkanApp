@@ -3,8 +3,9 @@
 
 #include "VisualObject.h"
 #include "Input.h"
+#include "Cube.h"
 
-class PlayerCharacter : public VisualObject, Input
+class PlayerCharacter : public VisualObject, Input, Cube
 {
 public:
     PlayerCharacter();

@@ -14,6 +14,7 @@ QVulkanWindowRenderer* VulkanWindow::createRenderer()
     //Camera is made when the renderer is made, so we know it is valid now
 //We set values on the camera a lot from this class, so it is convenient to have a pointer to it
     mCamera = &dynamic_cast<Renderer*>(mRenderer)->mCamera;
+    dynamic_cast<Renderer*>(mRenderer)->mInput=&mInput;
 
     return mRenderer;
 }

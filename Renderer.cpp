@@ -15,6 +15,8 @@ static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
 Renderer::Renderer(QVulkanWindow *w, bool msaa)
 	: mWindow(w)
 {
+
+
     if (msaa) {
         const QList<int> counts = w->supportedSampleCounts();
         qDebug() << "Supported sample counts:" << counts;
@@ -27,15 +29,27 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
         }
     }
 
-    mObjects.push_back(new Cube());
-    // Dag 230125
-    mObjects.push_back(new Triangle());
-    mObjects.push_back((new TriangleSurface()));
-    mObjects.push_back((new WorldAxis()));
-    // Dag 030225
-    mObjects.at(0)->setName("tri");
-    mObjects.at(1)->setName("quad");
-    mObjects.at(2)->setName("axis");
+    TriangleSurface* tri=new TriangleSurface();
+    mObjects.push_back(tri);
+
+    // pk 100325
+    Player=new Cube();
+    mObjects.push_back(Player);
+    Player->setName("Player");
+
+    for(int i =0; i<4; i++)
+    {
+        Cube* pickup = new Cube();
+        mObjects.push_back(pickup);
+        pickup->mMatrix.translate(rand()% 10,rand()% 10,0);
+        pickup->setName("Pickup");
+    }
+
+    // naming things here
+    // mObjects.at(0)->setName("Player");
+    // mObjects.at(1)->setName("Plane");
+    // mObjects.at(2)->setName("");
+
 
     // **************************************
     // Legger inn objekter i map
@@ -254,10 +268,62 @@ void Renderer::initSwapChainResources()
 
 void Renderer::startNextFrame()
 {
-    //OEF: Handeling input from keyboard and mouse is done in VulkanWindow
+    // input to move, using translate to change the player objects position
+    if(mInput->A)
+    {
+        Player->mMatrix.translate(-.1,0,0);
+    }
+    if(mInput->D)
+    {
+        Player->mMatrix.translate(0.1,0,0);
+    }
+    if(mInput->W)
+    {
+        Player->mMatrix.translate(0,0.1,0);
+    }
+    if(mInput->S)
+    {
+        Player->mMatrix.translate(0,-0.1,0);
+    }
+    //OEF: Handling input from keyboard and mouse is done in VulkanWindow
     //Has to be done each frame to get smooth movement
     mVulkanWindow->handleInput();
     mCamera.update();               //input can have moved the camera
+
+    for(int i=0; i<mObjects.size();i++){
+        for(int j=0;j<mObjects.size();j++){
+
+            float x1 = mObjects[i]->mMatrix.column(3).x() + 0.5;
+            float x2 = mObjects[i]->mMatrix.column(3).x() - 0.5;
+            float y1 = mObjects[i]->mMatrix.column(3).y() + 0.5;
+            float y2 = mObjects[i]->mMatrix.column(3).y() - 0.5;
+            float z1 = mObjects[i]->mMatrix.column(3).z() + 0.5;
+            float z2 = mObjects[i]->mMatrix.column(3).z() - 0.5;
+
+            float x1_ = mObjects[j]->mMatrix.column(3).x()  - 0.5; // other
+            float x2_ = mObjects[j]->mMatrix.column(3).x()  + 0.5;
+            float y1_ = mObjects[j]->mMatrix.column(3).y()  - 0.5;
+            float y2_ = mObjects[j]->mMatrix.column(3).y()  + 0.5;
+            float z1_ = mObjects[j]->mMatrix.column(3).z()  - 0.5;
+            float z2_ = mObjects[j]->mMatrix.column(3).z()  + 0.5;
+
+            if (
+                x1 > x1_ &&
+                x2 < x2_ &&
+                y1 > y1_ &&
+                y2 < y2_ &&
+                z1 > z1_ &&
+                z2 < z2_
+            )
+            {
+                if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Pickup"){
+                    mObjects[j]->enabled=false;
+
+                }
+
+            }
+        }
+    }
 
     VkCommandBuffer commandBuffer = mWindow->currentCommandBuffer();
 
@@ -268,6 +334,9 @@ void Renderer::startNextFrame()
     /********************************* Our draw call!: *********************************/
     for (std::vector<VisualObject*>::iterator it=mObjects.begin(); it!=mObjects.end(); it++)
     {
+        if((*it)->enabled==false){
+            continue;
+        }
 		if ((*it)->drawType == 0)
 			mDeviceFunctions->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipeline1);
 		else
@@ -280,8 +349,8 @@ void Renderer::startNextFrame()
     /***************************************/
 
     mDeviceFunctions->vkCmdEndRenderPass(commandBuffer);
-
-    mObjects.at(1)->rotate(1.0f, 0.0f, 0.0f, 1.0f);
+    //rotate functions
+    //mObjects.at(1)->rotate(1.0f, 0.0f, 0.0f, 1.0f);
     
     mWindow->frameReady();
     mWindow->requestUpdate(); // render continuously, throttled by the presentation rate

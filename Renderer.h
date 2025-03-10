@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "Triangle.h"
 #include "Cube.h"
+#include "Input.h"
 #include "TriangleSurface.h"
 #include "VisualObject.h"
 
@@ -74,6 +75,8 @@ private:
     friend class VulkanWindow;
     Triangle mTriangle;
     Cube mCube;
+    Cube* Player;
+    Input* mInput;
     TriangleSurface mSurface;
     VisualObject mVisualObject;
     std::vector<VisualObject*> mObjects;

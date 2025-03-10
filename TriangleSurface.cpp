@@ -87,22 +87,22 @@ TriangleSurface::TriangleSurface() : VisualObject()
     //Grid fill thing
     //husk, xz og ikke XY
     Vertex origo{0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f};
-    Vertex z{0.0f, 0.0f, 50.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f};
+    Vertex y{0.0f, 50.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f};
     Vertex x{50.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f};
-    Vertex xz{50.0f, 0.0f, 50.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f};
+    Vertex xy{50.0f, 50.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f};
 
     mVertices.push_back(origo);
-    mVertices.push_back(z);
+    mVertices.push_back(y);
     mVertices.push_back(x);
 
-    mVertices.push_back(z);
-    mVertices.push_back(xz);
+    mVertices.push_back(y);
+    mVertices.push_back(xy);
     mVertices.push_back(x);
 
 
     //Temporary scale and positioning
     mMatrix.scale(0.5f);
-    mMatrix.translate(0.5f, 0.1f, 0.1f);
+    mMatrix.translate(0.0f, -0.0f, -0.5f);
 }
 
 TriangleSurface::TriangleSurface(const std::string &filename)

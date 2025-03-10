@@ -86,6 +86,6 @@ Cube::Cube(): VisualObject() {
 
 
     //Temporary scale and positioning
-    mMatrix.scale(0.5f);
-    mMatrix.translate(0.5f, 0.1f, 0.1f);
+    //mMatrix.scale(0.5f);
+    //mMatrix.translate(0.5f, 0.1f, 0.1f);
 }

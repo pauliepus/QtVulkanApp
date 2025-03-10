@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include "Camera.h"
 #include "Triangle.h"
+#include "Cube.h"
 #include "TriangleSurface.h"
 #include "VisualObject.h"
 
@@ -72,6 +73,7 @@ protected:
 private:
     friend class VulkanWindow;
     Triangle mTriangle;
+    Cube mCube;
     TriangleSurface mSurface;
     VisualObject mVisualObject;
     std::vector<VisualObject*> mObjects;

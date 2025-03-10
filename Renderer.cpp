@@ -26,6 +26,8 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
             }
         }
     }
+
+    mObjects.push_back(new Cube());
     // Dag 230125
     mObjects.push_back(new Triangle());
     mObjects.push_back((new TriangleSurface()));

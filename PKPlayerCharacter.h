@@ -5,11 +5,14 @@
 #include "Input.h"
 #include "Cube.h"
 
-class PlayerCharacter : public VisualObject, Input, Cube
 {
 public:
-    PlayerCharacter();
+    Cube cube;
 
+    PlayerCharacter();
+    void update(float deltaTime);
+    void stopMovement();
+    void handleInput(int key);
 
 };
 

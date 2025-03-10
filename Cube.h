@@ -7,9 +7,9 @@
 
 class Cube : public VisualObject
 {
-
 public:
     Cube();
+    Cube(const std::string& filename);
 };
 
 #endif // CUBE_H

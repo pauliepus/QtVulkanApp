@@ -33,8 +33,9 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     mObjects.push_back(tri); // just to have a triangle
 
     // pk 100325
-    Player=new Cube();
+    Player = new Cube();
     mObjects.push_back(Player);
+
     Player->setName("Player");
 
     for(int i =0; i<4; i++)
@@ -290,6 +291,7 @@ void Renderer::startNextFrame()
     //Has to be done each frame to get smooth movement
 
     //this handleinput is used for the camera.
+
     mVulkanWindow->handleInput();
     mCamera.update();               //input can have moved the camera
 
@@ -447,6 +449,7 @@ void Renderer::setRenderPassParameters(VkCommandBuffer commandBuffer)
 // If we want to have more objects, we need to initialize buffers for each of them
 // This version is not a version with encapsulation
 // We use the VisualObject members mBuffer and mBufferMemory
+
 void Renderer::createBuffer(VkDevice logicalDevice, const VkDeviceSize uniAlign,
                                 VisualObject* visualObject, VkBufferUsageFlags usage)
 {

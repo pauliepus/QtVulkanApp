@@ -29,8 +29,8 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
         }
     }
 
-    TriangleSurface* tri=new TriangleSurface();
-    mObjects.push_back(tri);
+    TriangleSurface* tri = new TriangleSurface();
+    mObjects.push_back(tri); // just to have a triangle
 
     // pk 100325
     Player=new Cube();
@@ -285,10 +285,23 @@ void Renderer::startNextFrame()
     {
         Player->mMatrix.translate(0,-0.1,0);
     }
+
     //OEF: Handling input from keyboard and mouse is done in VulkanWindow
     //Has to be done each frame to get smooth movement
+
+    //this handleinput is used for the camera.
     mVulkanWindow->handleInput();
     mCamera.update();               //input can have moved the camera
+
+    /*
+     * AABB collision detection.
+     * This in essence holds two separate object arrays
+     * of [i] and of [j]. the floats repressent values of the objects' positions.
+     * the double for()loops are to see if they overlap,
+     * and the if() right underneath decides the overlaps.
+     *  Another if statement based on [i]->getName() of both objects is called
+     * to set the enabled bool to false, effectively removing the object from existence.
+     */
 
     for(int i=0; i<mObjects.size();i++){
         for(int j=0;j<mObjects.size();j++){

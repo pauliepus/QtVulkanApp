@@ -3,6 +3,7 @@
 #include <QFile>
 #include "VulkanWindow.h"
 #include "WorldAxis.h"
+#include "House.h"
 
 //Utility function for alignment:
 static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
@@ -33,18 +34,24 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     mObjects.push_back(tri); // just to have a triangle
 
     // pk 100325
-    Player = new Cube();
-    mObjects.push_back(Player);
 
-    Player->setName("Player");
+    // Player = new Cube();
+    // mObjects.push_back(Player);
 
-    for(int i =0; i<4; i++)
-    {
-        Cube* pickup = new Cube();
-        mObjects.push_back(pickup);
-        pickup->mMatrix.translate(rand()% 10,rand()% 10,0);
-        pickup->setName("Pickup");
-    }
+    // Player->setName("Player");
+
+    // for(int i =0; i<4; i++)
+    // {
+    //     Cube* pickup = new Cube();
+    //     mObjects.push_back(pickup);
+    //     pickup->mMatrix.translate(rand()% 10,rand()% 10,0);
+    //     pickup->setName("Pickup");
+    // }
+
+    House = new class House();
+    House->setName("House");
+    mObjects.push_back(House);
+
 
     // naming things here
     // mObjects.at(0)->setName("Player");

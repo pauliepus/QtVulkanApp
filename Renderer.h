@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "Triangle.h"
 #include "Cube.h"
+#include "House.h"
 #include "Input.h"
 #include "TriangleSurface.h"
 #include "VisualObject.h"
@@ -76,6 +77,7 @@ private:
     Triangle mTriangle;
     Cube mCube;
     Cube* Player;
+    House* House;
     Input* mInput;
     TriangleSurface mSurface;
     VisualObject mVisualObject;

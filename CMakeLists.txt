@@ -20,6 +20,7 @@ qt_add_executable(QtVulkanApp
     Input.h
     WorldAxis.h WorldAxis.cpp
     Cube.h Cube.cpp
+    House.h House.cpp
 )
 # Define the shader files
 set(SHADER_FILES

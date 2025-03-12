@@ -76,6 +76,7 @@ private:
     friend class VulkanWindow;
     Triangle mTriangle;
     Cube mCube;
+    Cube Enemy;
     Cube* Player;
     House* House;
     Input* mInput;

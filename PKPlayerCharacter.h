@@ -8,7 +8,7 @@ class PlayerCharacter : public Input, Cube
 {
 public:
     PlayerCharacter();
-
+    bool isColliding=false; //to stop movement
 };
 
 

@@ -35,23 +35,32 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
 
     // pk 100325
 
-    // Player = new Cube();
-    // mObjects.push_back(Player);
+    Player = new Cube();
+    mObjects.push_back(Player);
 
-    // Player->setName("Player");
+    Player->setName("Player");
 
-    // for(int i =0; i<4; i++)
-    // {
-    //     Cube* pickup = new Cube();
-    //     mObjects.push_back(pickup);
-    //     pickup->mMatrix.translate(rand()% 10,rand()% 10,0);
-    //     pickup->setName("Pickup");
-    // }
+    for(int i =0; i<4; i++)
+    {
+        Cube* pickup = new Cube();
+        mObjects.push_back(pickup);
+        pickup->mMatrix.translate(rand()% 10,rand()% 10,0);
+        pickup->setName("Pickup");
+    }
+
+    for(int o=0;o<5;o++)
+    {
+        Cube* Enemy = new Cube();
+        mObjects.push_back(Enemy);
+        Enemy->mMatrix.translate(rand()% 4,rand()%20,0);
+        Enemy->setName("Enemy");
+        qDebug("Enemy spawned");
+    }
 
     House = new class House();
     House->setName("House");
     mObjects.push_back(House);
-
+    House->mMatrix.translate(10.0f,10.0f,0);
 
     // naming things here
     // mObjects.at(0)->setName("Player");

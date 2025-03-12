@@ -10,6 +10,8 @@ public:
     House();
 
 
+private:
+
 };
 
 #endif // HOUSE_H

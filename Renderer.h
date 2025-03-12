@@ -8,6 +8,7 @@
 #include "Triangle.h"
 #include "Cube.h"
 #include "House.h"
+#include "Door.h"
 #include "Input.h"
 #include "TriangleSurface.h"
 #include "VisualObject.h"
@@ -79,6 +80,7 @@ private:
     Cube Enemy;
     Cube* Player;
     House* House;
+    Door* Door;
     Input* mInput;
     TriangleSurface mSurface;
     VisualObject mVisualObject;

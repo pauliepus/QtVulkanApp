@@ -4,6 +4,7 @@
 #include "VulkanWindow.h"
 #include "WorldAxis.h"
 #include "House.h"
+#include "Door.h"
 
 //Utility function for alignment:
 static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
@@ -35,10 +36,13 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
 
     // pk 100325
 
+    //PC creation
+
     Player = new Cube();
     mObjects.push_back(Player);
-
     Player->setName("Player");
+
+    // pickup creation
 
     for(int i =0; i<4; i++)
     {
@@ -47,6 +51,8 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
         pickup->mMatrix.translate(rand()% 10,rand()% 10,0);
         pickup->setName("Pickup");
     }
+
+    // Enemy creation
 
     for(int o=0;o<5;o++)
     {
@@ -57,12 +63,24 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
         qDebug("Enemy spawned");
     }
 
+    // House creation
+
     House = new class House();
     House->setName("House");
     mObjects.push_back(House);
     House->mMatrix.translate(10.0f,10.0f,0);
 
-    // naming things here
+
+    // // Door creation
+
+    Door = new class Door();
+    Door->setName("Door");
+    mObjects.push_back(Door);
+    //Door->mMatrix.translate(0.0f,0.0f,0);
+    Door->mMatrix.translate(9.0f,10.0f,0);
+   // Door->mMatrix.rotate(0.0f,0.0f,0.0f,1.f);
+
+    // naming things here keeping for reference.
     // mObjects.at(0)->setName("Player");
     // mObjects.at(1)->setName("Plane");
     // mObjects.at(2)->setName("");
@@ -72,6 +90,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     // Legger inn objekter i map
     // **************************************
     //std::string navn{"navn"}; // Skal VisualObject klassen få en navn-variabel?
+
     for (auto it=mObjects.begin(); it!=mObjects.end(); it++)
         mMap.insert(std::pair<std::string, VisualObject*>{(*it)->getName(),*it});
 
@@ -382,7 +401,7 @@ void Renderer::startNextFrame()
     mDeviceFunctions->vkCmdEndRenderPass(commandBuffer);
     //rotate functions
     //mObjects.at(1)->rotate(1.0f, 0.0f, 0.0f, 1.0f);
-    
+
     mWindow->frameReady();
     mWindow->requestUpdate(); // render continuously, throttled by the presentation rate
 }

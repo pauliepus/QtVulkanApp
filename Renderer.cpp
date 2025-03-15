@@ -44,7 +44,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
 
     // pickup creation
 
-    for(int i =0; i<4; i++)
+    for(int i =0; i<7; i++)
     {
         Cube* pickup = new Cube();
         mObjects.push_back(pickup);
@@ -70,15 +70,16 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     mObjects.push_back(House);
     House->mMatrix.translate(10.0f,10.0f,0);
 
-
     // // Door creation
 
     Door = new class Door();
     Door->setName("Door");
     mObjects.push_back(Door);
-    //Door->mMatrix.translate(0.0f,0.0f,0);
-    Door->mMatrix.translate(9.0f,10.0f,0);
-   // Door->mMatrix.rotate(0.0f,0.0f,0.0f,1.f);
+    Door->mMatrix.translate(12.33f,10.f,0);
+
+
+
+    // Door->mMatrix.rotate(0.0f,0.0f,0.0f,1.f);
 
     // naming things here keeping for reference.
     // mObjects.at(0)->setName("Player");
@@ -90,6 +91,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     // Legger inn objekter i map
     // **************************************
     //std::string navn{"navn"}; // Skal VisualObject klassen få en navn-variabel?
+
 
     for (auto it=mObjects.begin(); it!=mObjects.end(); it++)
         mMap.insert(std::pair<std::string, VisualObject*>{(*it)->getName(),*it});
@@ -302,6 +304,10 @@ void Renderer::initSwapChainResources()
     mCamera.perspective(45.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
 }
 
+void Renderer::houseScript(){
+
+}
+
 void Renderer::startNextFrame()
 {
     // input to move, using translate to change the player objects position
@@ -342,7 +348,7 @@ void Renderer::startNextFrame()
 
     for(int i=0; i<mObjects.size();i++){
         for(int j=0;j<mObjects.size();j++){
-
+            // AABB logic
             float x1 = mObjects[i]->mMatrix.column(3).x() + 0.5;
             float x2 = mObjects[i]->mMatrix.column(3).x() - 0.5;
             float y1 = mObjects[i]->mMatrix.column(3).y() + 0.5;
@@ -369,11 +375,31 @@ void Renderer::startNextFrame()
                 if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Pickup"){
                     mObjects[j]->enabled=false;
 
-                }
+                    pickupsCollected++;
+                    qDebug() << "Picked up! Total pickups collected:" << pickupsCollected;
+                    //welp, it uhh. works. The hitbox wasn't removed,
+                    // so it just kept looping.
 
+                    mObjects.erase(mObjects.begin() +j);
+                    j--;
+                    // this fixes my comment above
+                }
+                if(isOpen==true){
+                    qDebug()<<"ISOPEN";
+                    if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Door"){
+                        houseScript();
+
+                        }
+                    }
+                }
             }
         }
     }
+
+    if(pickupsCollected >= 7){
+        Door->mMatrix.rotate(2.f,0.f,0.f,2.f);
+        isOpen=true; //door active bool
+    };
 
     VkCommandBuffer commandBuffer = mWindow->currentCommandBuffer();
 

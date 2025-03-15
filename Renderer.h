@@ -81,6 +81,9 @@ private:
     Cube* Player;
     House* House;
     Door* Door;
+    int pickupsCollected=0;
+    bool isOpen=false; //door active bool
+
     Input* mInput;
     TriangleSurface mSurface;
     VisualObject mVisualObject;
@@ -93,6 +96,7 @@ private:
 
     Camera mCamera;
     class VulkanWindow* mVulkanWindow{ nullptr };
+    void houseScript();
 };
 
 #endif // RENDERER_H

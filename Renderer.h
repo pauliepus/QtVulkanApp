@@ -75,6 +75,8 @@ protected:
 
 private:
     friend class VulkanWindow;
+    int pickupsCollected=0;
+    bool isOpen=false;
     Triangle mTriangle;
     Cube mCube;
     Cube Enemy;

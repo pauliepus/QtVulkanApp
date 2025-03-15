@@ -44,7 +44,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
 
     // pickup creation
 
-    for(int i =0; i<4; i++)
+    for(int i =0; i<7; i++)
     {
         Cube* pickup = new Cube();
         mObjects.push_back(pickup);
@@ -77,8 +77,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     Door->setName("Door");
     mObjects.push_back(Door);
     //Door->mMatrix.translate(0.0f,0.0f,0);
-    Door->mMatrix.translate(9.0f,10.0f,0);
-   // Door->mMatrix.rotate(0.0f,0.0f,0.0f,1.f);
+    Door->mMatrix.translate(12.33f,10.f,0);
 
     // naming things here keeping for reference.
     // mObjects.at(0)->setName("Player");
@@ -369,9 +368,35 @@ void Renderer::startNextFrame()
                 if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Pickup"){
                     mObjects[j]->enabled=false;
 
-                }
+                    pickupsCollected++;
+                    qDebug() << "Picked up! Total pickups collected:" << pickupsCollected;
+                    //welp, it uhh. works. The hitbox wasn't removed,
+                    // so it just kept looping.
 
+                    mObjects.erase(mObjects.begin() +j);
+                    j--;
+                    // this fixes my comment above
+                }
+                if(isOpen==true){
+                    if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Door"){
+
+
+                    }
+                }
             }
+        }
+    }
+    if(pickupsCollected >= 7){
+        Door->mMatrix.rotate(2.f,0.f,0.f,3.f);
+        isOpen=true; //door active bool
+    };
+    //okay, finally fixed this too.
+    if(isOpen==true){
+        static bool alreadyPrinted = false;
+        if(!alreadyPrinted){
+            for(int o=0;o<4;o++)
+               qDebug()<<"Door's OPEN!";
+            alreadyPrinted=true;
         }
     }
 

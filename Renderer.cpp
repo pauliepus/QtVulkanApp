@@ -420,6 +420,9 @@ void Renderer::startNextFrame()
                         /* To not keep teleporting somewhere */
                         if(!alreadyThrough){
                             HouseLogic();
+                            //add logic to make inner house walls solid
+                            //add logic to move camera
+                            //add logic to create a pickup here.
                             alreadyThrough=true;
                             }
                         }

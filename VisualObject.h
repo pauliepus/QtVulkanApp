@@ -17,6 +17,14 @@ public:
     void scale(float s);
     void rotate(float t, float x, float y, float z);
 
+
+    // I fear this is *very* bad, given that now it's holding
+    // the position of *everything*, but maybe not.
+    /* Object position container */
+    QVector3D position;
+    void setPosition(float x, float y, float z){ position = QVector3D(x,y,z);}
+    QVector3D getPosition() const { return position;}
+
     VkDeviceMemory mBufferMemory{ VK_NULL_HANDLE };
     VkBuffer mBuffer{ VK_NULL_HANDLE };
     VkPrimitiveTopology mTopology { VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST };

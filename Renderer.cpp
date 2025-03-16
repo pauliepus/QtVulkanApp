@@ -33,6 +33,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     TriangleSurface* tri = new TriangleSurface();
     mObjects.push_back(tri); // just to have a triangle
 
+
     // pk 100325
 
     //PC creation
@@ -77,6 +78,17 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     mObjects.push_back(Door);
     //Door->mMatrix.translate(0.0f,0.0f,0);
     Door->mMatrix.translate(12.33f,10.f,0);
+
+    // Victory creation
+    if(hasPassedThrough){
+        Cube* Win = new Cube();
+        Win->setName("Victory");
+        Win->mMatrix.scale(0.3);
+        mObjects.push_back(Win);
+        QVector3D playerPos = Player->mMatrix.column(3).toVector3D();
+
+        //add for spawning in-front of player.
+    }
 
     // naming things here keeping for reference.
     // mObjects.at(0)->setName("Player");
@@ -317,15 +329,14 @@ void Renderer::setCameraInHouse(){
     mProjectionMatrix.scale(1.0f, 1.0f, -2.0f);
 
     // mViewMatrix.setToIdentity(Player);
+
     // mViewMatrix.lookAt(mEye, mAt, mUp); //Note: use this for camera location instead?
     //viewmatrix is private.. So- What do now?
 
-
     // const QSize sz = mWindow->swapChainImageSize();
 
-    // mCamera.perspective(93.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
     // //can't use the qvector.. hmm... what to do..
-    // mCamera.setPosition(QVector3D(12.5f,10.3f,2.5f));
+    // too dumb to use lookAt() too- damnit.
 }
 
 void Renderer::HouseLogic(){
@@ -403,7 +414,7 @@ void Renderer::startNextFrame()
             )
             {
                 if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Pickup"){
-                    mObjects[j]->enabled=false;
+                    mObjects[j]->enabled = false;
 
                     pickupsCollected++;
                     qDebug() << "Picked up! Total pickups collected:"
@@ -415,14 +426,19 @@ void Renderer::startNextFrame()
                     j--;
                     // this fixes my comment above
                 }
+                if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Pickup"){
+                    mObjects[j]->enabled = false; //
+                    mObjects.erase(mObjects.begin() +j);
+                }
                 if(isOpen==true){
                     if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Door"){
                         /* To not keep teleporting somewhere */
                         if(!alreadyThrough){
                             HouseLogic();
-                            //add logic to make inner house walls solid
+                            //add logic to make inner house walls solid: Nope- not creating normals.
                             //add logic to move camera
-                            //add logic to create a pickup here.
+                            //add logic to create a pickup here. / or in house logic.
+
                             alreadyThrough=true;
                             }
                         }

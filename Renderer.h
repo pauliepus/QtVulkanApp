@@ -28,8 +28,10 @@ public:
      *  scales the player down, and moves player inside the house.
      */
     void setCameraInHouse();
-    void HouseLogic(); //The ()ran that uses the two above functions.
-    void getDoorPos(); //gets door position, so I can teleport to it.
+
+    void HouseLogic(); //The () ran that uses the two above functions.
+    void getDoorPos(); //gets door position, so I can teleport to it. UNF-
+
     void hasPassedThroughDoor(); // function for a door bool
 
     // Initializes the Vulkan resources needed,

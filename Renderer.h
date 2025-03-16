@@ -30,6 +30,7 @@ public:
     void setCameraInHouse();
     void HouseLogic(); //The ()ran that uses the two above functions.
     void getDoorPos(); //gets door position, so I can teleport to it.
+    void hasPassedThroughDoor(); // function for a door bool
 
     // Initializes the Vulkan resources needed,
     // the buffers
@@ -93,6 +94,8 @@ private:
     int maxPickups = 1; //added for easier debug and testing.
     int pickupsCollected = 0;
     bool isOpen=false;
+    bool hasPassedThrough=false;
+    bool alreadyThrough=false;
     Triangle mTriangle;
     Cube mCube;
     Cube Enemy;

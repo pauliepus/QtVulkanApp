@@ -304,6 +304,10 @@ void Renderer::getDoorPos(){
 
 }
 
+void Renderer::hasPassedThroughDoor(){
+
+}
+
 void Renderer::setPlayerInHouse(){
     Player->mMatrix.scale(0.2f); //value between 0 and 1.0f to enlarge/shrink
     Player->mMatrix.translate(12.33f,10.2f,1.0f);
@@ -419,13 +423,25 @@ void Renderer::startNextFrame()
             }
         }
     }
+        /* To not keep teleporting somewhere */
+    if(hasPassedThrough==true){
+        static bool alreadythrough= false;
+        if(!alreadyThrough){
+            alreadyThrough=true;
+        }
+    }
 
+        /* Activates Door */
     if(pickupsCollected >= maxPickups){
         isOpen=true; //door active bool
         Door->mMatrix.rotate(2.f,0.f,0.f,3.f);
     };
 
     //okay, finally fixed this too.
+
+    /* Stops the qDebug print from appearing more than 4
+     * times w/ isOpen and alreadyPrinted */
+
     if(isOpen==true){
         static bool alreadyPrinted = false;
         if(!alreadyPrinted){

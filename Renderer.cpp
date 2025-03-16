@@ -408,8 +408,8 @@ void Renderer::startNextFrame()
                     pickupsCollected++;
                     qDebug() << "Picked up! Total pickups collected:"
                     << pickupsCollected << ". Get " << maxPickups << "!";
-                    //welp, it uhh. works. The hitbox wasn't removed,
-                    // so it just kept looping.
+                    // welp, it uhh. works. The hitbox(actually object) wasn't removed,
+                    // so it just kept going and going lol.
 
                     mObjects.erase(mObjects.begin() +j);
                     j--;

@@ -19,11 +19,11 @@ public:
     Renderer(QVulkanWindow *w, bool msaa = false);
 
     // * These two functions are set for visibility, I hope this isn't inefficient.
-
     /*
      * scales, moves cam, and changes perspective.
      */
     void setPlayerInHouse();
+    // * These two functions are set for visibility, I hope this isn't inefficient.
     /*
      *  scales the player down, and moves player inside the house.
      */
@@ -32,7 +32,8 @@ public:
     void HouseLogic(); //The () ran that uses the two above functions.
     void getDoorPos(); //gets door position, so I can teleport to it. UNF-
 
-    void hasPassedThroughDoor(); // function for a door bool
+    /*  */
+    void hasPassedThroughDoor(); // UNUSED function for a door bool
 
     // Initializes the Vulkan resources needed,
     // the buffers
@@ -67,7 +68,6 @@ protected:
 	void setModelMatrix(QMatrix4x4 modelMatrix);
 
 	void setRenderPassParameters(VkCommandBuffer commandBuffer);
-
 
     //The ModelViewProjection MVP matrix
     QMatrix4x4 mProjectionMatrix;

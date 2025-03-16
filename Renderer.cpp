@@ -42,6 +42,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     mObjects.push_back(Player);
     Player->setName("Player");
 
+
     // pickup creation
 
     for(Pickups = 0; Pickups < maxPickups; Pickups++)
@@ -365,7 +366,7 @@ void Renderer::startNextFrame()
         Player->mMatrix.translate(0,-0.1,0);
     }
 
-    QVector3D playerPos = Player->mMatrix.column(3).toVector3D();
+    //QVector3D playerPos = Player->mMatrix.column(3).toVector3D();
     //mCamera.setPosition(QVector3D(0.0f, 0.0f, 50.0f));
 
 

@@ -18,7 +18,6 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
 	: mWindow(w)
 {
 
-
     if (msaa) {
         const QList<int> counts = w->supportedSampleCounts();
         qDebug() << "Supported sample counts:" << counts;
@@ -44,7 +43,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
 
     // pickup creation
 
-    for(int i =0; i<7; i++)
+    for(Pickups = 0; Pickups < maxPickups; Pickups++)
     {
         Cube* pickup = new Cube();
         mObjects.push_back(pickup);
@@ -301,6 +300,28 @@ void Renderer::initSwapChainResources()
     mCamera.perspective(45.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
 }
 
+void Renderer::setPlayerInHouse(){
+    Player->mMatrix.scale(-2.f);
+    Player->mMatrix.translate(12.33f,10.2f,1.0f);
+}
+
+void Renderer::setCameraInHouse(){
+    mProjectionMatrix.scale(1.0f, 1.0f, -2.0f);
+    // mViewMatrix.lookAt(mEye, mAt, mUp); //Note: use this for camera location instead?
+
+    const QSize sz = mWindow->swapChainImageSize();
+
+    mCamera.perspective(93.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
+    //can't use the qvector.. hmm... what to do..
+    mCamera.setPosition(QVector3D(12.5f,10.3f,2.5f));
+}
+
+void Renderer::HouseLogic(){
+    setCameraInHouse();
+    setPlayerInHouse();
+}
+
+
 void Renderer::startNextFrame()
 {
     // input to move, using translate to change the player objects position
@@ -369,7 +390,8 @@ void Renderer::startNextFrame()
                     mObjects[j]->enabled=false;
 
                     pickupsCollected++;
-                    qDebug() << "Picked up! Total pickups collected:" << pickupsCollected;
+                    qDebug() << "Picked up! Total pickups collected:"
+                    << pickupsCollected << ". Get " << maxPickups << "!";
                     //welp, it uhh. works. The hitbox wasn't removed,
                     // so it just kept looping.
 
@@ -379,17 +401,18 @@ void Renderer::startNextFrame()
                 }
                 if(isOpen==true){
                     if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Door"){
-
-
+                        HouseLogic();
                     }
                 }
             }
         }
     }
-    if(pickupsCollected >= 7){
-        Door->mMatrix.rotate(2.f,0.f,0.f,3.f);
+
+    if(pickupsCollected >= maxPickups){
         isOpen=true; //door active bool
+        Door->mMatrix.rotate(2.f,0.f,0.f,3.f);
     };
+
     //okay, finally fixed this too.
     if(isOpen==true){
         static bool alreadyPrinted = false;

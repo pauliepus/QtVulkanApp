@@ -21,7 +21,7 @@ void Camera::lookAt(const QVector3D &eye, const QVector3D &at, const QVector3D &
     mAt = at;
     mUp = up;
     mViewMatrix.setToIdentity();
-    mViewMatrix.lookAt(mEye, mAt, mUp);
+    mViewMatrix.lookAt(mEye, mAt, mUp); //Note: use this for camera location instead?
 }
 
 void Camera::pitch(float degrees)

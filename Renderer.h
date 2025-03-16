@@ -18,7 +18,19 @@ class Renderer : public QVulkanWindowRenderer
 public:
     Renderer(QVulkanWindow *w, bool msaa = false);
 
-    //Initializes the Vulkan resources needed,
+    // * These two functions are set for visibility, I hope this isn't inefficient.
+
+    /*
+     * scales, moves cam, and changes perspective.
+     */
+    void setPlayerInHouse();
+    /*
+     *  scales the player down, and moves player inside the house.
+     */
+    void setCameraInHouse();
+    void HouseLogic(); //The ()ran that uses the two above functions.
+
+    // Initializes the Vulkan resources needed,
     // the buffers
     // vertex descriptions for the shaders
     // making the shaders, etc
@@ -52,6 +64,7 @@ protected:
 
 	void setRenderPassParameters(VkCommandBuffer commandBuffer);
 
+
     //The ModelViewProjection MVP matrix
     QMatrix4x4 mProjectionMatrix;
     //Rotation angle of the triangle
@@ -63,7 +76,7 @@ protected:
 
     VkDeviceMemory mBufferMemory{ VK_NULL_HANDLE };
     VkBuffer mBuffer{ VK_NULL_HANDLE };
- 
+
     VkDescriptorPool mDescriptorPool{ VK_NULL_HANDLE };
     VkDescriptorSetLayout mDescriptorSetLayout{ VK_NULL_HANDLE };
     VkDescriptorSet mDescriptorSet[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT]{ VK_NULL_HANDLE };
@@ -75,7 +88,9 @@ protected:
 
 private:
     friend class VulkanWindow;
-    int pickupsCollected=0;
+    int Pickups = 0;
+    int maxPickups = 1; //added for easier debug and testing.
+    int pickupsCollected = 0;
     bool isOpen=false;
     Triangle mTriangle;
     Cube mCube;

@@ -57,7 +57,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     {
         Cube* Enemy = new Cube();
         mObjects.push_back(Enemy);
-        Enemy->mMatrix.translate(rand()% 4,rand()%20,0);
+        Enemy->mMatrix.translate(rand()% 12,rand()%20,0);
         Enemy->setName("Enemy");
         qDebug("Enemy spawned");
     }
@@ -300,20 +300,28 @@ void Renderer::initSwapChainResources()
     mCamera.perspective(45.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
 }
 
+void Renderer::getDoorPos(){
+
+}
+
 void Renderer::setPlayerInHouse(){
-    Player->mMatrix.scale(-2.f);
+    Player->mMatrix.scale(0.2f); //value between 0 and 1.0f to enlarge/shrink
     Player->mMatrix.translate(12.33f,10.2f,1.0f);
 }
 
 void Renderer::setCameraInHouse(){
     mProjectionMatrix.scale(1.0f, 1.0f, -2.0f);
+
+    // mViewMatrix.setToIdentity(Player);
     // mViewMatrix.lookAt(mEye, mAt, mUp); //Note: use this for camera location instead?
+    //viewmatrix is private.. So- What do now?
 
-    const QSize sz = mWindow->swapChainImageSize();
 
-    mCamera.perspective(93.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
-    //can't use the qvector.. hmm... what to do..
-    mCamera.setPosition(QVector3D(12.5f,10.3f,2.5f));
+    // const QSize sz = mWindow->swapChainImageSize();
+
+    // mCamera.perspective(93.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
+    // //can't use the qvector.. hmm... what to do..
+    // mCamera.setPosition(QVector3D(12.5f,10.3f,2.5f));
 }
 
 void Renderer::HouseLogic(){
@@ -342,13 +350,17 @@ void Renderer::startNextFrame()
         Player->mMatrix.translate(0,-0.1,0);
     }
 
+    QVector3D playerPos = Player->mMatrix.column(3).toVector3D();
+    //mCamera.setPosition(QVector3D(0.0f, 0.0f, 50.0f));
+
+
     //OEF: Handling input from keyboard and mouse is done in VulkanWindow
     //Has to be done each frame to get smooth movement
 
     //this handleinput is used for the camera.
 
-    mVulkanWindow->handleInput();
-    mCamera.update();               //input can have moved the camera
+    mVulkanWindow->handleInput();   //handling input to move camera
+    mCamera.update();               //Updates camera to receive input to move camera
 
     /*
      * AABB collision detection.
@@ -420,6 +432,12 @@ void Renderer::startNextFrame()
             for(int o=0;o<4;o++)
                qDebug()<<"Door's OPEN!";
             alreadyPrinted=true;
+            /*
+             * this could be done better, if I made a separate function for
+             * alreadyPrinted, I'd stick to Linus Torvald's words.
+             * "if you use more than 3 indents, you suck at coding"
+             * Good thing I really do suck at coding :D
+             */
         }
     }
 

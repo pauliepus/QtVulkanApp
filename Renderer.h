@@ -29,6 +29,7 @@ public:
      */
     void setCameraInHouse();
     void HouseLogic(); //The ()ran that uses the two above functions.
+    void getDoorPos(); //gets door position, so I can teleport to it.
 
     // Initializes the Vulkan resources needed,
     // the buffers

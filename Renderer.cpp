@@ -417,25 +417,22 @@ void Renderer::startNextFrame()
                 }
                 if(isOpen==true){
                     if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Door"){
-                        HouseLogic();
+                        /* To not keep teleporting somewhere */
+                        if(!alreadyThrough){
+                            HouseLogic();
+                            alreadyThrough=true;
+                            }
+                        }
                     }
+                /* Activates Door */
+                if(pickupsCollected >= maxPickups){
+                    isOpen=true; //door active bool
+                    Door->mMatrix.rotate(2.f,0.f,0.f,3.f);
                 }
             }
         }
     }
-        /* To not keep teleporting somewhere */
-    if(hasPassedThrough==true){
-        static bool alreadythrough= false;
-        if(!alreadyThrough){
-            alreadyThrough=true;
-        }
-    }
 
-        /* Activates Door */
-    if(pickupsCollected >= maxPickups){
-        isOpen=true; //door active bool
-        Door->mMatrix.rotate(2.f,0.f,0.f,3.f);
-    };
 
     //okay, finally fixed this too.
 
@@ -704,7 +701,7 @@ void Renderer::releaseResources()
         mDeviceFunctions->vkFreeMemory(dev, mVisualObject.mBufferMemory, nullptr);
         mVisualObject.mBufferMemory = VK_NULL_HANDLE;
     }
-    // Samme for alle objekter i container
+    // Same for every object in container
     for (auto it=mObjects.begin(); it!=mObjects.end(); it++) {
         if ((*it)->mBuffer) {
             mDeviceFunctions->vkDestroyBuffer(dev, (*it)->mBuffer, nullptr);

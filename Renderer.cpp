@@ -15,7 +15,7 @@ static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
 
 /*** Renderer class ***/
 Renderer::Renderer(QVulkanWindow *w, bool msaa)
-	: mWindow(w)
+    : mWindow(w)
 {
 
     if (msaa) {
@@ -38,7 +38,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
 
     //PC creation
 
-    Player = new Cube();
+    Player = new Cube(std::string("Player"));
     mObjects.push_back(Player);
     Player->setName("Player");
 
@@ -47,7 +47,9 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
 
     for(Pickups = 0; Pickups < maxPickups; Pickups++)
     {
-        Cube* pickup = new Cube();
+        std::string name = "Pickup";
+        Cube* pickup = new Cube(std::string("Pickup"));
+        //lag func for color i cube
         mObjects.push_back(pickup);
         pickup->mMatrix.translate(rand()% 10,rand()% 10,0);
         pickup->setName("Pickup");
@@ -57,7 +59,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
 
     for(int o=0;o<5;o++)
     {
-        Cube* Enemy = new Cube();
+        Cube* Enemy = new Cube(std::string("Enemy"));
         mObjects.push_back(Enemy);
         Enemy->mMatrix.translate(rand()% 12,rand()%20,0);
         Enemy->setName("Enemy");
@@ -85,6 +87,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
         Cube* Win = new Cube();
         Win->setName("Victory");
         Win->mMatrix.scale(0.3);
+        //set pos for win box in house here
         mObjects.push_back(Win);
         QVector3D playerPos = Player->mMatrix.column(3).toVector3D();
 
@@ -327,6 +330,7 @@ void Renderer::setPlayerInHouse(){
 }
 
 void Renderer::setCameraInHouse(){
+    // use viewmatrix scaling instead
     mProjectionMatrix.scale(1.0f, 1.0f, -2.0f);
 
     // mViewMatrix.setToIdentity(Player);
@@ -367,6 +371,7 @@ void Renderer::startNextFrame()
     }
 
     //QVector3D playerPos = Player->mMatrix.column(3).toVector3D();
+
     //mCamera.setPosition(QVector3D(0.0f, 0.0f, 50.0f));
 
 

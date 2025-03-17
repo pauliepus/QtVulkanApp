@@ -93,7 +93,7 @@ protected:
 private:
     friend class VulkanWindow;
     int Pickups = 0;
-    int maxPickups = 1; //added for easier debug and testing.
+    int maxPickups = 4; //added for easier debug and testing.
     int pickupsCollected = 0;
     bool isOpen=false;
     bool hasPassedThrough=false;

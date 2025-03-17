@@ -22,6 +22,8 @@ public:
     // the position of *everything*, but maybe not.
     /* Object position container */
     QVector3D position;
+    QVector3D mScale;
+    QVector3D mRotate;
     void setPosition(float x, float y, float z){ position = QVector3D(x,y,z);}
     QVector3D getPosition() const { return position;}
 

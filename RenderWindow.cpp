@@ -1,6 +1,104 @@
 #include "RenderWindow.h"
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <algorithm>
 #include <QVulkanFunctions>
 #include <QFile>
+
+// Structure to represent a 2D point
+struct Point {
+    double x, y;
+    bool operator==(const Point& other) const {
+        return std::abs(x - other.x) < 1e-6 && std::abs(y - other.y) < 1e-6;
+    }
+};
+
+// Structure to represent a triangle
+struct Triangle {
+    Point a, b, c;
+    bool operator==(const Triangle& other) const {
+        return (a == other.a && b == other.b && c == other.c) ||
+               (a == other.a && b == other.c && c == other.b) ||
+               (a == other.b && b == other.a && c == other.c) ||
+               (a == other.b && b == other.c && c == other.a) ||
+               (a == other.c && b == other.a && c == other.b) ||
+               (a == other.c && b == other.b && c == other.a);
+    }
+};
+
+// Function to check if a point is inside the circumcircle of a given triangle
+bool isPointInCircumcircle(const Triangle& tri, const Point& p) {
+    double ax = tri.a.x - p.x, ay = tri.a.y - p.y;
+    double bx = tri.b.x - p.x, by = tri.b.y - p.y;
+    double cx = tri.c.x - p.x, cy = tri.c.y - p.y;
+    double det = (ax * (by * (cx * cx + cy * cy) - cy * (bx * bx + by * by)) -
+                  ay * (bx * (cx * cx + cy * cy) - cx * (bx * bx + by * by)) +
+                  (ax * ax + ay * ay) * (bx * cy - by * cx));
+    return det > 0;
+}
+
+// Generate a super-triangle that covers all points
+Triangle getSuperTriangle(const std::vector<Point>& points) {
+    double minX = points[0].x, minY = points[0].y;
+    double maxX = minX, maxY = minY;
+    for (const auto& p : points) {
+        minX = std::min(minX, p.x);
+        minY = std::min(minY, p.y);
+        maxX = std::max(maxX, p.x);
+        maxY = std::max(maxY, p.y);
+    }
+    double dx = maxX - minX, dy = maxY - minY;
+    double dmax = std::max(dx, dy) * 2.0;
+    return { {minX - dmax, minY - dmax},
+            {minX + dmax * 2, minY - dmax},
+            {minX +
+                 dmax, minY + dmax * 2} };
+}
+
+// Perform Delaunay Triangulation using Bowyer-Watson algorithm
+std::vector<Triangle> delaunayTriangulation(std::vector<Point>& points) {
+    std::vector<Triangle> triangles;
+    Triangle superTriangle = getSuperTriangle(points);
+    triangles.push_back(superTriangle);
+    for (const auto& p : points) {
+        std::vector<Triangle> badTriangles;
+        std::vector<std::pair<Point, Point>> edges;
+        for (const auto& tri : triangles) {
+            if (isPointInCircumcircle(tri, p)) {
+                badTriangles.push_back(tri);
+                edges.push_back({ tri.a, tri.b });
+                edges.push_back({ tri.b, tri.c });
+                edges.push_back({ tri.c, tri.a });
+            }
+        }
+
+        // Remove bad triangles
+        triangles.erase(std::remove_if(triangles.begin(), triangles.end(),
+                                       [&badTriangles](const Triangle& t) {
+                                           return std::find(badTriangles.begin(), badTriangles.end(), t) !=
+                                                  badTriangles.end();
+                                       }), triangles.end());
+
+        // Reconstruct triangles
+        for (const auto& edge : edges) {
+            triangles.push_back({ edge.first, edge.second, p });
+        }
+    }
+
+    // Remove super-triangle-related triangles
+    triangles.erase(std::remove_if(triangles.begin(), triangles.end(),
+                                   [&superTriangle](const Triangle& t) {
+                                       return (t.a == superTriangle.a || t.b == superTriangle.a || t.c ==
+                                                                                                       superTriangle.a ||
+                                               t.a == superTriangle.b || t.b == superTriangle.b || t.c ==
+                                                                                                       superTriangle.b ||
+                                               t.a == superTriangle.c || t.b == superTriangle.c || t.c ==
+                                                                                                       superTriangle.c);
+                                   }), triangles.end());
+    return triangles;
+}
+
 
 //Utility function for alignment:
 static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
@@ -25,6 +123,8 @@ RenderWindow::RenderWindow(QVulkanWindow *w, bool msaa)
             }
         }
     }
+
+
     // Dag 230125
     mObjects.push_back(new VkTriangle());
     mObjects.push_back((new VkTriangleSurface()));
@@ -299,6 +399,7 @@ void RenderWindow::startNextFrame()
         setModelMatrix(mCamera.cMatrix() * (*it)->mMatrix);
         mDeviceFunctions->vkCmdDraw(cmdBuf, (*it)->mVertices.size(), 1, 0, 0);
     }
+
     // Alternativt draw kall ved å traversere unordered map
     /*    for (auto it=mMap.begin(); it!=mMap.end(); it++)
     {
@@ -308,9 +409,26 @@ void RenderWindow::startNextFrame()
         setModelMatrix(mCamera.cMatrix() * p->mMatrix);
         mDeviceFunctions->vkCmdDraw(cmdBuf, p->mVertices.size(), 1, 0, 0);
     }
-*/
+    */
+
+    // Sample input points
+    std::vector<Point> points = {
+        {0.0, 0.0}, {1.0, 0.0}, {0.5, 1.0}, {0.2, 0.3}, {0.7, 0.8}
+    };
+
+    // Compute Delaunay Triangulation
+    std::vector<Triangle> result = delaunayTriangulation(points);
+
+    // Output the triangles
+    std::cout << "Delaunay Triangles:\n";
+    for (const auto& tri : result) {
+        std::cout << "Triangle: (" << tri.a.x << ", " << tri.a.y << ") - "
+                  << "(" << tri.b.x << ", " << tri.b.y << ") - "
+                  << "(" << tri.c.x << ", " << tri.c.y << ")\n";
+    }
+
     mDeviceFunctions->vkCmdEndRenderPass(cmdBuf);
-    mObjects.at(1)->rotate(1.0f, 0.0f, 0.0f, 1.0f);
+    //mObjects.at(1)->rotate(1.0f, 0.0f, 0.0f, 1.0f);
     //qDebug() << mObjects.at(1)->mMatrix;
     mWindow->frameReady();
     mWindow->requestUpdate(); // render continuously, throttled by the presentation rate

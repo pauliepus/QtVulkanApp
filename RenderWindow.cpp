@@ -206,6 +206,8 @@ void RenderWindow::initResources()
     if (err != VK_SUCCESS)
         qFatal("Failed to create pipeline cache: %d", err);
 
+    //
+
     // Pipeline layout
     // OEF: PushConstants update - set up the push constant info
     VkPushConstantRange pushConstantRange{

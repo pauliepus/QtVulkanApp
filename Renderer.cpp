@@ -82,17 +82,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     //Door->mMatrix.translate(0.0f,0.0f,0);
     Door->mMatrix.translate(12.33f,10.f,0);
 
-    // Victory creation
-    if(hasPassedThrough){
-        Cube* Win = new Cube();
-        Win->setName("Victory");
-        Win->mMatrix.scale(0.3);
-        //set pos for win box in house here
-        mObjects.push_back(Win);
-        QVector3D playerPos = Player->mMatrix.column(3).toVector3D();
 
-        //add for spawning in-front of player.
-    }
 
     // naming things here keeping for reference.
     // mObjects.at(0)->setName("Player");
@@ -302,6 +292,28 @@ void Renderer::initResources()
     getVulkanHWInfo(); // if you want to get info about the Vulkan hardware
 }
 
+// Victory creation
+void Renderer::WinningLogic(){
+    if(hasPassedThrough){
+        Cube* Win = new Cube();
+        Win->setName("Victory");
+        Win->mMatrix.scale(0.3);
+        //set pos for win box in house here
+        mObjects.push_back(Win);
+        QVector3D playerPos = Player->mMatrix.column(3).toVector3D();
+
+        if(isWin==true){
+            static bool alreadyWon = false;
+            if(!alreadyWon){
+                for(int o=0;o<3;o++)
+                    qDebug()<<"Y O U  W I N! ! ! ";
+                alreadyWon=true;
+            }
+        }
+        //add for spawning in-front of player.
+    }
+}
+
 // This function is called at startup and when the app window is resized
 void Renderer::initSwapChainResources()
 {
@@ -326,7 +338,10 @@ void Renderer::hasPassedThroughDoor(){
 
 void Renderer::setPlayerInHouse(){
     Player->mMatrix.scale(0.2f); //value between 0 and 1.0f to enlarge/shrink
-    Player->mMatrix.translate(12.33f,10.2f,1.0f);
+    Player->mMatrix.translate(12.33f,10.2f,1.0f); // the player gets moved to /exact/ coordinates
+
+    // I want getpos of door here. So that I can move player at->door + 1 or whatever.
+    // remember mObjects.
 }
 
 void Renderer::setCameraInHouse(){

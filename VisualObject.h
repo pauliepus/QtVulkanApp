@@ -11,6 +11,13 @@ public:
     std::vector<Vertex> mVertices;
     inline std::vector<Vertex> getVertices() { return mVertices; }
     VisualObject();
+
+
+    void updatePosition() {
+        position = mMatrix.column(3).toVector3D(); // Extracts position from transformation matrix
+    }
+
+
     void setName(std::string name);
     std::string getName() const;
     void move(float x, float y = 0.0f, float z = 0.0f);
@@ -26,6 +33,7 @@ public:
     QVector3D mRotate;
     void setPosition(float x, float y, float z){ position = QVector3D(x,y,z);}
     QVector3D getPosition() const { return position;}
+
 
     VkDeviceMemory mBufferMemory{ VK_NULL_HANDLE };
     VkBuffer mBuffer{ VK_NULL_HANDLE };

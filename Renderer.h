@@ -23,14 +23,15 @@ public:
      * scales, moves cam, and changes perspective.
      */
     void setPlayerInHouse();
-    // * These two functions are set for visibility, I hope this isn't inefficient.
-    /*
+     /* These two functions are set for visibility, I hope this isn't inefficient.
+     *
      *  scales the player down, and moves player inside the house.
      */
     void setCameraInHouse();
 
     void HouseLogic(); //The () ran that uses the two above functions.
     void getDoorPos(); //gets door position, so I can teleport to it. UNF-
+    void WinningLogic();
 
     /*  */
     void hasPassedThroughDoor(); // UNUSED function for a door bool
@@ -95,9 +96,10 @@ private:
     int Pickups = 0;
     int maxPickups = 4; //added for easier debug and testing.
     int pickupsCollected = 0;
-    bool isOpen=false;
-    bool hasPassedThrough=false;
-    bool alreadyThrough=false;
+    bool isWin = false;
+    bool isOpen = false;
+    bool hasPassedThrough = false;
+    bool alreadyThrough = false;
     Triangle mTriangle;
     Cube mCube;
     Cube Enemy;

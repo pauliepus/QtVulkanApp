@@ -89,10 +89,10 @@ Renderer::  Renderer(QVulkanWindow *w, bool msaa)
     mObjects.push_back(Win);
     Win->setName(std::string("Win"));
 
-    // Position initializations- Maybe I should have these in the header, idk
-   // QVector3D winPos = Win->mMatrix.column(3).toVector3D();
-    QVector3D playerPos = Player->mMatrix.column(3).toVector3D();
-   // QVector3D doorPos;
+    // Position initializations- Already exist in header, here defined.
+    winPos = Win->mMatrix.column(3).toVector3D();
+    playerPos = Player->mMatrix.column(3).toVector3D();
+    doorPos = Door->mMatrix.column(3).toVector3D();
 
 
     // naming things here keeping for reference.
@@ -309,8 +309,10 @@ void Renderer::WinningLogic(){
         static bool winCreated = false;
 
         if (!winCreated) {
-            //Win->setName("Victory");
+            Win->setName("Victory");
             mObjects.push_back(Win);
+            qDebug()<< "Spawned";
+            Door->updatePosition();
             Win->mMatrix.scale(0.3);
             Win->mMatrix.translate(doorPos.x(), doorPos.y() + 2.0f, doorPos.z());
             Win->mMatrix.rotate(0.5f,1.f,0.f);
@@ -347,31 +349,33 @@ void Renderer::initSwapChainResources()
 }
 
 void Renderer::hasPassedThroughDoor(){
-
+    hasPassedThrough=true;
 }
 
 void Renderer::setPlayerInHouse(){
     Player->mMatrix.scale(0.2f); //value between 0 and 1.0f to enlarge/shrink
-
-    // I want getpos of door here. So that I can move player at->door + 1 or whatever.
-    // remember mObjects.
-    QVector3D doorPos = Door->position;
-
-    /*
-     * Player->mMatrix.translate(12.33f,10.2f,1.0f);
-     * the player gets moved to /exact/ coordinates changing this to behind door position now.
-     */
-
+    Door->position = doorPos;
+    Player->mMatrix.translate(doorPos.x(), doorPos.y(), doorPos.z() -4.0f); //change z w -4
 }
 
 void Renderer::setCameraInHouse(){
+    const QSize sz = mWindow->swapChainImageSize();
     // use viewmatrix scaling instead
-    mProjectionMatrix.scale(1.0f, 1.0f, -2.0f);
+
+    Door->position = doorPos; //har lyst å legge til +2y på denne, men e sliter litt for øyebelikket.
+    mProjectionMatrix.scale(0.2f, 0.2f, -2.0f);
+    mCamera.perspective(15.0f, sz.width() / (float) sz.height(), 2.0f, 30.0f);
+    //mCamera.setPosition(QVector3D(-doorPos.x(), -doorPos.y() + 5.0f, doorPos.z()));
+    mCamera.setPosition(QVector3D(-15,-20,-5));
+    //mCamera.lookAt(&Player,&doorPos,&Win);
+    //mCamera.lookAt(QVector3D(-doorPos, doorPos, doorPos));
 }
 
 void Renderer::HouseLogic(){
+    hasPassedThroughDoor();
     setCameraInHouse();
     setPlayerInHouse();
+    WinningLogic();
 }
 
 
@@ -394,10 +398,6 @@ void Renderer::startNextFrame()
     {
         Player->mMatrix.translate(0,-0.1,0);
     }
-
-    //QVector3D playerPos = Player->mMatrix.column(3).toVector3D();
-
-    //mCamera.setPosition(QVector3D(0.0f, 0.0f, 50.0f));
 
 
     //OEF: Handling input from keyboard and mouse is done in VulkanWindow
@@ -478,7 +478,7 @@ void Renderer::startNextFrame()
                 /* Activates Door */
                 if(pickupsCollected >= maxPickups){
                     isOpen=true; //door active bool
-                    Door->mMatrix.rotate(2.f,0.f,0.f,3.f);
+                    Door->mMatrix.rotate(0.5f,0.f,0.f,3.f);
                 }
             }
         }

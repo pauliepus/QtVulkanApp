@@ -42,7 +42,7 @@ void Camera::update()
     mViewMatrix.rotate(mYaw, 0.f, 1.f, 0.f);
 	mViewMatrix.rotate(mPitch, 1.f, 0.f, 0.f);    
     //mViewMatrix.rotate(mYaw, 0.f, 1.f, 0.f);      //pitch then yaw makes camera wonkey
-	//mViewMatrix.translate(mPosition);             //Makes rotation work around Camera Origo
+    //mViewMatrix.translate(mPosition);             //Makes rotation work around Camera Origo
 }
 
 void Camera::setPosition(const QVector3D& position)

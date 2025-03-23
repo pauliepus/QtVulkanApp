@@ -29,8 +29,10 @@ public:
      */
     void setCameraInHouse();
 
+    QVector3D doorPos = Door->position; // Finding door position
+    QVector3D winPos = Win->position; // Finding door position
+
     void HouseLogic(); //The () ran that uses the two above functions.
-    void getDoorPos(); //gets door position, so I can teleport to it. UNF-
     void WinningLogic();
 
     /*  */
@@ -94,7 +96,7 @@ protected:
 private:
     friend class VulkanWindow;
     int Pickups = 0;
-    int maxPickups = 4; //added for easier debug and testing.
+    int maxPickups = 1; //added for easier debug and testing.
     int pickupsCollected = 0;
     bool isWin = false;
     bool isOpen = false;
@@ -106,6 +108,7 @@ private:
     Cube* Player;
     House* House;
     Door* Door;
+    Cube* Win;
     Input* mInput;
     TriangleSurface mSurface;
     VisualObject mVisualObject;

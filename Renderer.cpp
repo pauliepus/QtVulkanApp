@@ -14,7 +14,7 @@ static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
 
 
 /*** Renderer class ***/
-Renderer::Renderer(QVulkanWindow *w, bool msaa)
+Renderer::  Renderer(QVulkanWindow *w, bool msaa)
     : mWindow(w)
 {
 
@@ -41,6 +41,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     Player = new Cube(std::string("Player"));
     mObjects.push_back(Player);
     Player->setName("Player");
+
 
 
     // pickup creation
@@ -74,7 +75,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     House->mMatrix.translate(10.0f,10.0f,0);
 
 
-    // // Door creation
+    // Door creation
 
     Door = new class Door();
     Door->setName("Door");
@@ -82,6 +83,16 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     //Door->mMatrix.translate(0.0f,0.0f,0);
     Door->mMatrix.translate(12.33f,10.f,0);
 
+    // Victory initialization
+    Cube* Win;
+    Win = new Cube(std::string("Win"));
+    mObjects.push_back(Win);
+    Win->setName(std::string("Win"));
+
+    // Position initializations- Maybe I should have these in the header, idk
+   // QVector3D winPos = Win->mMatrix.column(3).toVector3D();
+    QVector3D playerPos = Player->mMatrix.column(3).toVector3D();
+   // QVector3D doorPos;
 
 
     // naming things here keeping for reference.
@@ -295,12 +306,19 @@ void Renderer::initResources()
 // Victory creation
 void Renderer::WinningLogic(){
     if(hasPassedThrough){
-        Cube* Win = new Cube();
-        Win->setName("Victory");
-        Win->mMatrix.scale(0.3);
-        //set pos for win box in house here
-        mObjects.push_back(Win);
-        QVector3D playerPos = Player->mMatrix.column(3).toVector3D();
+        static bool winCreated = false;
+
+        if (!winCreated) {
+            //Win->setName("Victory");
+            mObjects.push_back(Win);
+            Win->mMatrix.scale(0.3);
+            Win->mMatrix.translate(doorPos.x(), doorPos.y() + 2.0f, doorPos.z());
+            Win->mMatrix.rotate(0.5f,1.f,0.f);
+            winCreated = true;
+        }
+
+        Player->mMatrix.setColumn(3, QVector4D(doorPos.x(), doorPos.y() + 1.0f, doorPos.z(), 1.0f));
+        Player->updatePosition();
 
         if(isWin==true){
             static bool alreadyWon = false;
@@ -328,35 +346,27 @@ void Renderer::initSwapChainResources()
     mCamera.perspective(45.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
 }
 
-void Renderer::getDoorPos(){
-
-}
-
 void Renderer::hasPassedThroughDoor(){
 
 }
 
 void Renderer::setPlayerInHouse(){
     Player->mMatrix.scale(0.2f); //value between 0 and 1.0f to enlarge/shrink
-    Player->mMatrix.translate(12.33f,10.2f,1.0f); // the player gets moved to /exact/ coordinates
 
     // I want getpos of door here. So that I can move player at->door + 1 or whatever.
     // remember mObjects.
+    QVector3D doorPos = Door->position;
+
+    /*
+     * Player->mMatrix.translate(12.33f,10.2f,1.0f);
+     * the player gets moved to /exact/ coordinates changing this to behind door position now.
+     */
+
 }
 
 void Renderer::setCameraInHouse(){
     // use viewmatrix scaling instead
     mProjectionMatrix.scale(1.0f, 1.0f, -2.0f);
-
-    // mViewMatrix.setToIdentity(Player);
-
-    // mViewMatrix.lookAt(mEye, mAt, mUp); //Note: use this for camera location instead?
-    //viewmatrix is private.. So- What do now?
-
-    // const QSize sz = mWindow->swapChainImageSize();
-
-    // //can't use the qvector.. hmm... what to do..
-    // too dumb to use lookAt() too- damnit.
 }
 
 void Renderer::HouseLogic(){
@@ -456,6 +466,7 @@ void Renderer::startNextFrame()
                         /* To not keep teleporting somewhere */
                         if(!alreadyThrough){
                             HouseLogic();
+
                             //add logic to make inner house walls solid: Nope- not creating normals.
                             //add logic to move camera
                             //add logic to create a pickup here. / or in house logic.

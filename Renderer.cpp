@@ -34,18 +34,27 @@ Renderer::  Renderer(QVulkanWindow *w, bool msaa)
     mObjects.push_back(tri); // just to have a triangle
 
 
-    // pk 100325
+    // pk 100325 // 2 hele helger til ngl //240325 blir kanskje ferdig???
 
     //PC creation
+
+    // Victory initialization
+
+    Win = new Cube(std::string("Win"));
+    mObjects.push_back(Win);
+    Win->setName("Victory");
+    Win->mMatrix.scale(0.3);
+    //Win->move(15.0f,10.0f,0.0f);
+    Win->updatePosition();
+    Win->move(doorPos.x(), doorPos.y() - 3.5f, doorPos.z() + 3.0f);
+    Win->updatePosition();
+    Win->enabled=false;
 
     Player = new Cube(std::string("Player"));
     mObjects.push_back(Player);
     Player->setName("Player");
 
-
-
-    // pickup creation
-
+    // Pickup creation
     for(Pickups = 0; Pickups < maxPickups; Pickups++)
     {
         std::string name = "Pickup";
@@ -80,19 +89,11 @@ Renderer::  Renderer(QVulkanWindow *w, bool msaa)
     Door = new class Door();
     Door->setName("Door");
     mObjects.push_back(Door);
-    //Door->mMatrix.translate(0.0f,0.0f,0);
-    Door->mMatrix.translate(12.33f,10.f,0);
-
-    // Victory initialization
-    Cube* Win;
-    Win = new Cube(std::string("Win"));
-    mObjects.push_back(Win);
-    Win->setName(std::string("Win"));
+    Door->move(12.33f,10.f,0);
 
     // Position initializations- Already exist in header, here defined.
-    winPos = Win->mMatrix.column(3).toVector3D();
-    playerPos = Player->mMatrix.column(3).toVector3D();
     doorPos = Door->mMatrix.column(3).toVector3D();
+    playerPos = Player->mMatrix.column(3).toVector3D();
 
 
     // naming things here keeping for reference.
@@ -110,7 +111,7 @@ Renderer::  Renderer(QVulkanWindow *w, bool msaa)
         mMap.insert(std::pair<std::string, VisualObject*>{(*it)->getName(),*it});
 
 	//Inital position of the camera
-    mCamera.setPosition(QVector3D(-1, -1, -4));
+    mCamera.setPosition(QVector3D(-10, -10,-25));
 
     //OEF: need access to our VulkanWindow so making a convenience pointer
     mVulkanWindow = dynamic_cast<VulkanWindow*>(w);
@@ -306,31 +307,28 @@ void Renderer::initResources()
 // Victory creation
 void Renderer::WinningLogic(){
     if(hasPassedThrough){
-        static bool winCreated = false;
 
-        if (!winCreated) {
-            Win->setName("Victory");
-            mObjects.push_back(Win);
-            qDebug()<< "Spawned";
-            Door->updatePosition();
-            Win->mMatrix.scale(0.3);
-            Win->mMatrix.translate(doorPos.x(), doorPos.y() + 2.0f, doorPos.z());
+        if (!Win->enabled) {
+            Win->enabled=true;
+
+            qDebug() << Player->position << "player";
+            //update pos first,
+            Win->updatePosition();
+            Player->updatePosition();
+
             Win->mMatrix.rotate(0.5f,1.f,0.f);
-            winCreated = true;
-        }
+            qDebug() << "Spawned"; // for å sjekke
 
-        Player->mMatrix.setColumn(3, QVector4D(doorPos.x(), doorPos.y() + 1.0f, doorPos.z(), 1.0f));
-        Player->updatePosition();
+            //sets new pos
+           // Win->mMatrix.setColumn(3, QVector4D(playerPos.x() + 2.0f, playerPos.y() + 2.0f, playerPos.z() - 2S.0f, 1.0f));
+            Win->mMatrix.setColumn(3, QVector4D(doorPos.x() + 2.0f, doorPos.y() + 1.0f, doorPos.z(), 1.0f));
+            qDebug() << Win->position;
+            qDebug() << Player->position << "player";
 
-        if(isWin==true){
-            static bool alreadyWon = false;
-            if(!alreadyWon){
-                for(int o=0;o<3;o++)
-                    qDebug()<<"Y O U  W I N! ! ! ";
-                alreadyWon=true;
-            }
+            //updates the pos
+            Win->updatePosition();
+            qDebug() << Win->position << "updated win";
         }
-        //add for spawning in-front of player.
     }
 }
 
@@ -350,26 +348,32 @@ void Renderer::initSwapChainResources()
 
 void Renderer::hasPassedThroughDoor(){
     hasPassedThrough=true;
+    Win->updatePosition();
 }
 
 void Renderer::setPlayerInHouse(){
     Player->mMatrix.scale(0.2f); //value between 0 and 1.0f to enlarge/shrink
     Door->position = doorPos;
-    Player->mMatrix.translate(doorPos.x(), doorPos.y(), doorPos.z() -4.0f); //change z w -4
+    Player->mMatrix.setColumn(3, QVector4D(doorPos.x(), doorPos.y() + 1.0f, doorPos.z(), 1.0f));
 }
 
 void Renderer::setCameraInHouse(){
     const QSize sz = mWindow->swapChainImageSize();
     // use viewmatrix scaling instead
 
-    Door->position = doorPos; //har lyst å legge til +2y på denne, men e sliter litt for øyebelikket.
-    mProjectionMatrix.scale(0.2f, 0.2f, -2.0f);
-    mCamera.perspective(15.0f, sz.width() / (float) sz.height(), 2.0f, 30.0f);
-    //mCamera.setPosition(QVector3D(-doorPos.x(), -doorPos.y() + 5.0f, doorPos.z()));
-    mCamera.setPosition(QVector3D(-15,-20,-5));
-    //mCamera.lookAt(&Player,&doorPos,&Win);
-    //mCamera.lookAt(QVector3D(-doorPos, doorPos, doorPos));
+   // mProjectionMatrix.scale(0.2f, 0.2f, -2.0f);
+   // mCamera.perspective(15.0f, sz.width() / (float) sz.height(), 2.0f, 30.0f);
+   // mCamera.setPosition(QVector3D(-15,-20,-5));
+
+    mCamera.setPosition(QVector3D(-doorPos.x(), -doorPos.y() - 1.0f, doorPos.z() - 2.5f));
+    //mCamera.lookAt({-doorPos.x(), -doorPos.y() - 1.0f, doorPos.z() - 2.0f}, Player->position,{0,0,-1});
 }
+
+// touch door-
+//     guy shrinks+tps infront of door inside house
+//     camera tps above door looking inside
+//         win box spawns inside, relative to door pos (also shrunk)
+
 
 void Renderer::HouseLogic(){
     hasPassedThroughDoor();
@@ -457,10 +461,22 @@ void Renderer::startNextFrame()
                     j--;
                     // this fixes my comment above
                 }
-                if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Pickup"){
+                //logic for touching pickups
+                if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Win"){
                     mObjects[j]->enabled = false; //
-                    mObjects.erase(mObjects.begin() +j);
+                    //mObjects.erase(mObjects.begin() +j);
+                    isWin=true;
+                    //logic for just winning ig idk anymore
+                    if(isWin==true){
+                        static bool alreadyWon = false;
+                        if(!alreadyWon){
+                            for(int o=0;o<3;o++)
+                                qDebug()<<"Y O U  W I N! ! ! ";
+                            alreadyWon=true;
+                        }
+                    }
                 }
+                //logic for "touching" door
                 if(isOpen==true){
                     if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Door"){
                         /* To not keep teleporting somewhere */

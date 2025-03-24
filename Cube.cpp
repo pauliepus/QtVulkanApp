@@ -91,7 +91,6 @@ Cube::Cube(): VisualObject()
 };
 Cube::Cube(std::string name) {
     Vertex v1,v2,v3,v4,v5,v6,v7,v8;
-
     if(name=="Enemy"){
         //red front-low-left, point at origo
         Vertex t1{0.0f,   0.0f,  0.0f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f};

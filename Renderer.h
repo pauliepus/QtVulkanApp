@@ -32,9 +32,9 @@ public:
     void HouseLogic(); //The () ran that uses the two above functions.
     void WinningLogic();
 
-    QVector3D doorPos; // Finding door position
-    QVector3D winPos; // Finding Win position
-    QVector3D playerPos; // finding Player pos
+    QVector3D doorPos;   // Finding door position
+    QVector3D playerPos;   // Finding player position
+
 
     /*  */
     void hasPassedThroughDoor(); // USED function for a door bool
@@ -108,8 +108,8 @@ private:
     Cube Enemy;
     Cube* Player;
     House* House;
-    Door* Door;
     Cube* Win;
+    Door* Door;
     Input* mInput;
     TriangleSurface mSurface;
     VisualObject mVisualObject;

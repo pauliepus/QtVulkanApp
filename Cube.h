@@ -12,7 +12,6 @@ public:
     Cube();
     Cube(std::string name);
 
-
     // /* Returns Player Position */
     // QVector3D getPlayerPosition(VisualObject* Player){return Player->mMatrix.column(3).toVector3D();}
 

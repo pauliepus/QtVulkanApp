@@ -374,7 +374,7 @@ void Renderer::setCameraInHouse(){
 //     touch door-
 //     guy shrinks+tps infront of door inside house
 //     camera tps above door looking inside
-//         win box spawns inside, relative to door pos (also shrunk)
+//     win box spawns inside, relative to door pos (also shrunk)
 
 
 void Renderer::HouseLogic(){
@@ -460,7 +460,7 @@ void Renderer::startNextFrame()
                     qDebug() << "Picked up! Total pickups collected:"
                              << pickupsCollected << ". Get " << maxPickups << "!";
 
-                    // welp, it uhh. works. The hitbox(actually object) wasn't removed,
+                    // welp, it uhh. works. The hitbox(actually- object) wasn't removed,
                     // so it just kept going and going lol.
 
                     mObjects.erase(mObjects.begin() +j);
@@ -472,18 +472,7 @@ void Renderer::startNextFrame()
                 if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Enemy"){
                     mObjects[i]->enabled = false;
 
-                    // static bool alreadyLost=false;
-                    // if(!alreadyLost){
-                    //     for(int o=0;0<3;o++){
-                    //         qDebug() << "You got caught! You lose.";
-                    //     }
-                    //     mObjects.erase(mObjects.begin() + i);
-                    //     i--;
-
-                    //     alreadyLost=true;
-                    // }
-
-                    // I'm creating an infinite loop here- why?
+                    enemyTouched = true;
                 }
 
                 // logic for touching Win box
@@ -531,6 +520,20 @@ void Renderer::startNextFrame()
         }
     }
 
+    //So- I now definitely understand *why* we'd use functions here instead.
+
+    if(enemyTouched==true){
+        static bool alreadyLost=false;
+        if(!alreadyLost){
+            for(int o=0;0<3;o++){
+                qDebug() << "You got caught! You lose.";
+            }
+            mObjects.erase(mObjects.begin() + i);
+            i--;
+
+            alreadyLost=true;
+        }
+    }
 
     //okay, finally fixed this too.
 

@@ -101,6 +101,7 @@ private:
     bool isOpen = false;
     bool hasPassedThrough = false;
     bool alreadyThrough = false;
+    bool enemyTouched = false;
     Triangle mTriangle;
     Cube mCube;
     Cube Enemy;

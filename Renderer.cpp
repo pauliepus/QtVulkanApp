@@ -469,30 +469,23 @@ void Renderer::startNextFrame()
                 }
 
                 //logic for touching enemies
-                if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Enemy"){
-                    mObjects[i]->enabled = false;
+                // if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Enemy"){
+                //     mObjects[i]->enabled = false;
+                //     mObjects.erase(mObjects.begin() + i);
+                //     i--;
+                //     enemyTouched = true;
 
-                    enemyTouched = true;
-                }
+                /* currently breaks */
+                // }
 
                 // logic for touching Win box
                 if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Win"){
                     mObjects[j]->enabled = false; //
                     //mObjects.erase(mObjects.begin() +j);
                     isWin=true;
+                    mObjects.erase(mObjects.begin() + i);
+                    i--;
 
-                    //logic for just winning ig idk anymore
-                    //lol- 260325 why is this even here ^
-
-                    // if(isWin==true){
-                    //     static bool alreadyWon = false;
-                    //     if(!alreadyWon){
-                    //         for(int o=0;o<3;o++)
-                    //             qDebug()<<"Y O U  W I N! ! ! ";
-                    //         alreadyWon=true;
-                    //     }
-                    // }
-                    // Am I creating an infinite loop here as well then?
                 }
 
                 //logic for "touching" door
@@ -511,6 +504,7 @@ void Renderer::startNextFrame()
                             }
                         }
                     }
+
                 /* Activates Door */
                 if(pickupsCollected >= maxPickups){
                     isOpen=true; //door active bool
@@ -522,19 +516,28 @@ void Renderer::startNextFrame()
 
     //So- I now definitely understand *why* we'd use functions here instead.
 
-    if(enemyTouched==true){
-        static bool alreadyLost=false;
-        if(!alreadyLost){
-            for(int o=0;0<3;o++){
-                qDebug() << "You got caught! You lose.";
-            }
-            mObjects.erase(mObjects.begin() + i);
-            i--;
+    // if(enemyTouched==true){
+    //     static bool alreadyLost=false;
+    //     if(!alreadyLost){
+    //         for(int o=0;0<3;o++)
+    //             qDebug() << "You got caught! You lose.";
+    //         alreadyLost=true;
 
-            alreadyLost=true;
-        }
-    }
+    // //bytt ut det her med en funksjon bare, cuz I fucking CANT
+    // }
+    // }
 
+    // if(isWin==true){
+    //     static bool alreadyWon = false;
+    //     if(!alreadyWon){
+    //         for(int o=0;o<3;o++)
+    //             qDebug()<<"Y O U  W I N! ! ! ";
+    //         alreadyWon=true;
+    //     }
+    // }
+
+    // Am I creating an infinite loop here as well then?
+    //    -yes I was. e2: Likely still am
     //okay, finally fixed this too.
 
     /* Stops the qDebug print from appearing more than 4

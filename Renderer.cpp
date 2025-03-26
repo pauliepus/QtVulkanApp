@@ -349,6 +349,8 @@ void Renderer::initSwapChainResources()
 void Renderer::hasPassedThroughDoor(){
     hasPassedThrough=true;
     Win->updatePosition();
+
+    //helt ærlig, er det mulig ubrukelig, fordi jeg kunne bare gjort dette (og har gjort dette) i senere tid.
 }
 
 void Renderer::setPlayerInHouse(){
@@ -369,7 +371,7 @@ void Renderer::setCameraInHouse(){
     //mCamera.lookAt({-doorPos.x(), -doorPos.y() - 1.0f, doorPos.z() - 2.0f}, Player->position,{0,0,-1});
 }
 
-// touch door-
+//     touch door-
 //     guy shrinks+tps infront of door inside house
 //     camera tps above door looking inside
 //         win box spawns inside, relative to door pos (also shrunk)
@@ -447,13 +449,17 @@ void Renderer::startNextFrame()
                 z1 > z1_ &&
                 z2 < z2_
             )
+
             {
+
+                //logic for touching pickups
                 if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Pickup"){
                     mObjects[j]->enabled = false;
 
                     pickupsCollected++;
                     qDebug() << "Picked up! Total pickups collected:"
-                    << pickupsCollected << ". Get " << maxPickups << "!";
+                             << pickupsCollected << ". Get " << maxPickups << "!";
+
                     // welp, it uhh. works. The hitbox(actually object) wasn't removed,
                     // so it just kept going and going lol.
 
@@ -461,25 +467,50 @@ void Renderer::startNextFrame()
                     j--;
                     // this fixes my comment above
                 }
-                //logic for touching pickups
+
+                //logic for touching enemies
+                if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Enemy"){
+                    mObjects[i]->enabled = false;
+
+                    // static bool alreadyLost=false;
+                    // if(!alreadyLost){
+                    //     for(int o=0;0<3;o++){
+                    //         qDebug() << "You got caught! You lose.";
+                    //     }
+                    //     mObjects.erase(mObjects.begin() + i);
+                    //     i--;
+
+                    //     alreadyLost=true;
+                    // }
+
+                    // I'm creating an infinite loop here- why?
+                }
+
+                // logic for touching Win box
                 if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Win"){
                     mObjects[j]->enabled = false; //
                     //mObjects.erase(mObjects.begin() +j);
                     isWin=true;
+
                     //logic for just winning ig idk anymore
-                    if(isWin==true){
-                        static bool alreadyWon = false;
-                        if(!alreadyWon){
-                            for(int o=0;o<3;o++)
-                                qDebug()<<"Y O U  W I N! ! ! ";
-                            alreadyWon=true;
-                        }
-                    }
+                    //lol- 260325 why is this even here ^
+
+                    // if(isWin==true){
+                    //     static bool alreadyWon = false;
+                    //     if(!alreadyWon){
+                    //         for(int o=0;o<3;o++)
+                    //             qDebug()<<"Y O U  W I N! ! ! ";
+                    //         alreadyWon=true;
+                    //     }
+                    // }
+                    // Am I creating an infinite loop here as well then?
                 }
+
                 //logic for "touching" door
                 if(isOpen==true){
                     if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Door"){
-                        /* To not keep teleporting somewhere */
+
+                        /* To not keep teleporting/shrinkin somewhere */
                         if(!alreadyThrough){
                             HouseLogic();
 

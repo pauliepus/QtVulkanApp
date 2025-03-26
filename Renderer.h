@@ -35,8 +35,6 @@ public:
     QVector3D doorPos;   // Finding door position
     QVector3D playerPos;   // Finding player position
 
-
-    /*  */
     void hasPassedThroughDoor(); // USED function for a door bool
 
     // Initializes the Vulkan resources needed,

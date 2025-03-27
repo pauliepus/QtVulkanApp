@@ -44,11 +44,11 @@ Renderer::  Renderer(QVulkanWindow *w, bool msaa)
     mObjects.push_back(Win);
     Win->setName("Victory");
     Win->mMatrix.scale(0.3);
-    //Win->move(15.0f,10.0f,0.0f);
     Win->updatePosition();
-    Win->move(doorPos.x(), doorPos.y() - 3.5f, doorPos.z() + 3.0f);
+    Win->move(doorPos.x() - 1.0f, doorPos.y() - 3.5f, doorPos.z() + 1.0f);
     Win->updatePosition();
-    Win->enabled=false;
+
+    // Win->enabled=false;
 
     Player = new Cube(std::string("Player"));
     mObjects.push_back(Player);
@@ -59,21 +59,19 @@ Renderer::  Renderer(QVulkanWindow *w, bool msaa)
     {
         std::string name = "Pickup";
         Cube* pickup = new Cube(std::string("Pickup"));
-        //lag func for color i cube
         mObjects.push_back(pickup);
+
         pickup->mMatrix.translate(rand()% 10,rand()% 10,0);
         pickup->setName("Pickup");
     }
 
     // Enemy creation
-
     for(int o=0;o<5;o++)
     {
         Cube* Enemy = new Cube(std::string("Enemy"));
         mObjects.push_back(Enemy);
         Enemy->mMatrix.translate(rand()% 12,rand()%20,0);
         Enemy->setName("Enemy");
-        qDebug("Enemy spawned");
     }
 
     // House creation
@@ -308,27 +306,9 @@ void Renderer::initResources()
 void Renderer::WinningLogic(){
     if(hasPassedThrough){
 
-        if (!Win->enabled) {
-            Win->enabled=true;
+        Win->mMatrix.rotate(0.5f,1.f,0.f);
 
-            qDebug() << Player->position << "player";
-            //update pos first,
-            Win->updatePosition();
-            Player->updatePosition();
-
-            Win->mMatrix.rotate(0.5f,1.f,0.f);
-            qDebug() << "Spawned"; // for å sjekke
-
-            //sets new pos
-           // Win->mMatrix.setColumn(3, QVector4D(playerPos.x() + 2.0f, playerPos.y() + 2.0f, playerPos.z() - 2S.0f, 1.0f));
-            Win->mMatrix.setColumn(3, QVector4D(doorPos.x() + 2.0f, doorPos.y() + 1.0f, doorPos.z(), 1.0f));
-            qDebug() << Win->position;
-            qDebug() << Player->position << "player";
-
-            //updates the pos
-            Win->updatePosition();
-            qDebug() << Win->position << "updated win";
-        }
+        qDebug() << "Moving"; // for å sjekke
     }
 }
 
@@ -350,7 +330,7 @@ void Renderer::hasPassedThroughDoor(){
     hasPassedThrough=true;
     Win->updatePosition();
 
-    //helt ærlig, er det mulig ubrukelig, fordi jeg kunne bare gjort dette (og har gjort dette) i senere tid.
+    //helt ærlig, er det her mulig ubrukelig,
 }
 
 void Renderer::setPlayerInHouse(){
@@ -448,6 +428,8 @@ void Renderer::startNextFrame()
                 y2 < y2_ &&
                 z1 > z1_ &&
                 z2 < z2_
+                && mObjects[i]->enabled
+                && mObjects[j]->enabled
             )
 
             {
@@ -463,28 +445,27 @@ void Renderer::startNextFrame()
                     // welp, it uhh. works. The hitbox(actually- object) wasn't removed,
                     // so it just kept going and going lol.
 
-                    mObjects.erase(mObjects.begin() +j);
-                    j--;
+                    // mObjects.erase(mObjects.begin() + j);
+                    // j--;
                     // this fixes my comment above
                 }
 
                 //logic for touching enemies
-                // if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Enemy"){
-                //     mObjects[i]->enabled = false;
-                //     mObjects.erase(mObjects.begin() + i);
-                //     i--;
-                //     enemyTouched = true;
+                if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Enemy"){
 
-                /* currently breaks */
-                // }
+                    mObjects[j]->enabled = false;
+                    mObjects[i]->enabled = false;
+                    enemyTouched = true;
+
+                }
 
                 // logic for touching Win box
                 if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Win"){
                     mObjects[j]->enabled = false; //
                     //mObjects.erase(mObjects.begin() +j);
                     isWin=true;
-                    mObjects.erase(mObjects.begin() + i);
-                    i--;
+                    // mObjects.erase(mObjects.begin() + i);
+                    // i--;
 
                 }
 
@@ -516,32 +497,30 @@ void Renderer::startNextFrame()
 
     //So- I now definitely understand *why* we'd use functions here instead.
 
-    // if(enemyTouched==true){
-    //     static bool alreadyLost=false;
-    //     if(!alreadyLost){
-    //         for(int o=0;0<3;o++)
-    //             qDebug() << "You got caught! You lose.";
-    //         alreadyLost=true;
+    if(enemyTouched==true){
+        if(!alreadyLost){
+            for(int o=0;o<3;o++)
+                qDebug() << "You got caught! You lose.";
+            alreadyLost=true;
+        }
+    }
 
-    // //bytt ut det her med en funksjon bare, cuz I fucking CANT
-    // }
-    // }
-
-    // if(isWin==true){
-    //     static bool alreadyWon = false;
-    //     if(!alreadyWon){
-    //         for(int o=0;o<3;o++)
-    //             qDebug()<<"Y O U  W I N! ! ! ";
-    //         alreadyWon=true;
-    //     }
-    // }
+    if(isWin==true){
+        static bool alreadyWon = false;
+        if(!alreadyWon){
+            for(int o=0;o<3;o++)
+                qDebug()<<"Y O U  W I N! ! ! ";
+            alreadyWon=true;
+        }
+    }
 
     // Am I creating an infinite loop here as well then?
     //    -yes I was. e2: Likely still am
-    //okay, finally fixed this too.
+    // for loop "0<3" (<.<\'
 
     /* Stops the qDebug print from appearing more than 4
      * times w/ isOpen and alreadyPrinted */
+    //okay, finally fixed this too.
 
     if(isOpen==true){
         static bool alreadyPrinted = false;
@@ -549,6 +528,7 @@ void Renderer::startNextFrame()
             for(int o=0;o<4;o++)
                qDebug()<<"Door's OPEN!";
             alreadyPrinted=true;
+            Win->enabled=true;
             /*
              * this could be done better, if I made a separate function for
              * alreadyPrinted, I'd stick to Linus Torvald's words.

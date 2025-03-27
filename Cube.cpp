@@ -173,28 +173,28 @@ Cube::Cube(std::string name) {
     };
     if(name=="Win"){
         //red front-low-left, point at origo
-        Vertex v1{0.0f,   0.0f,  0.0f,   1.0f, 0.0f, 1.0f,   0.0f, 0.0f};
+        Vertex t1{0.0f,   0.0f,  0.0f,   0.70f, 0.0f, 0.4f,   0.0f, 0.0f};
         v1=t1;
         //green front-low-right green, point x+1
-        Vertex v2{1.0f,   0.0f,  0.0f,   1.0f, 0.0f, 1.0f,   0.0f, 0.0f};
+        Vertex t2{1.0f,   0.0f,  0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f};
         v2=t2;
         //blue front-top-right, point y+1
-        Vertex v3{0.0f,   1.0f,  0.0f,   1.0f, 0.0f, 1.0f,   0.0f, 0.0f};
+        Vertex t3{0.0f,   1.0f,  0.0f,  0.70f, 0.0f, 0.4f,   0.0f, 0.0f};
         v3=t3;
         //r+g front-    x+1,y+1,0,
-        Vertex v4{1.0f,   1.0f,  0.0f,   1.0f, 0.0f, 1.0f,   0.0f, 0.0f};
+        Vertex t4{1.0f,   1.0f,  0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f};
         v4=t4;
         //blue bak v3 -low-right x+1,z-1
-        Vertex v5{0.0f,  1.0f, -1.0f,   1.0f, 0.0f, 1.0f,   0.0f, 0.0f};
+        Vertex t5{0.0f,  1.0f, -1.0f,   0.70f, 0.0f, 0.4f,   0.0f, 0.0f};
         v5=t5;
         //red bak-v1
-        Vertex v6{0.0f,  0.0f, -1.0f,   1.0f, 0.0f, 1.0f,   0.0f, 0.0f};
+        Vertex t6{0.0f,  0.0f, -1.0f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f};
         v6=t6;
         //green bak-v2
-        Vertex v7{1.0f,  0.0f, -1.0f,   1.0f, 0.0f, 1.0f,   0.0f, 0.0f};
+        Vertex t7{1.0f,  0.0f, -1.0f,   0.70f, 0.0f, 0.4f,   0.0f, 0.0f};
         v7=t7;
         //r+g bak v4
-        Vertex v8{1.0f,  1.0f, -1.0f,   1.0f, 0.0f, 1.0f,   0.0f, 0.0f};
+        Vertex t8{1.0f,  1.0f, -1.0f,   0.70f, 0.0f, 0.4f,   0.0f, 0.0f};
         v8=t8;
     };
 

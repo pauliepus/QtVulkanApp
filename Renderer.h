@@ -113,6 +113,8 @@ private:
     House* House;
     Door* Door;
 
+    void resetGame();
+
     Input* mInput;
     TriangleSurface mSurface;
     VisualObject mVisualObject;

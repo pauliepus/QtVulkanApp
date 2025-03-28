@@ -30,6 +30,7 @@ public:
             target = movingToB ? patrolB : patrolA;
         }
     }
+
 private:
 
     QVector3D patrolA;

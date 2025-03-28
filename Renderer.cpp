@@ -59,7 +59,7 @@ Renderer::  Renderer(QVulkanWindow *w, bool msaa)
         Cube* pickup = new Cube(std::string("Pickup"));
         mObjects.push_back(pickup);
         pickup->scale(0.5);
-        pickup->mMatrix.translate(rand()% 10,rand()% 10,0);
+        pickup->mMatrix.translate(rand()% 30,rand()% 50,0);
         pickup->setName("Pickup");
     }
 
@@ -71,6 +71,7 @@ Renderer::  Renderer(QVulkanWindow *w, bool msaa)
     {
         Cube* Enemy = new Cube(std::string("Enemy"));
         mObjects.push_back(Enemy);
+        Enemy->scale(0.7);
         Enemy->mMatrix.translate(rand()% 25,rand()% 40,0);
 
         float x1 = rand() % 20;
@@ -338,6 +339,8 @@ void Renderer::initSwapChainResources()
     mCamera.perspective(45.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
 }
 
+/* Some game logic function section */
+
 void Renderer::hasPassedThroughDoor(){
     hasPassedThrough=true;
     Win->updatePosition();
@@ -363,11 +366,29 @@ void Renderer::setCameraInHouse(){
     //mCamera.lookAt({-doorPos.x(), -doorPos.y() - 1.0f, doorPos.z() - 2.0f}, Player->position,{0,0,-1});
 }
 
-//     touch door-
-//     guy shrinks+tps infront of door inside house
-//     camera tps above door looking inside
-//     win box spawns inside, relative to door pos (also shrunk)
+void Renderer::resetGame(){
 
+    //ech not gonna get it to work in time tbh.
+
+    Player->mMatrix.setToIdentity();
+    Player->mMatrix.translate(0.0f, 0.0f, 0.0f);
+    Player->setName("Player");
+
+    for (auto& pickup : mObjects) {
+        if (pickup->getName() == "Pickup") {
+            pickup->mMatrix.setToIdentity();
+            mObjects.push_back(pickup);
+            pickup->mMatrix.translate(rand() % 25, rand() % 40, 0);
+        }
+    }
+
+    House->mMatrix.setToIdentity();
+    Door->mMatrix.setToIdentity();
+
+    isWin = false;
+    pickupsCollected= 0;
+    hasPassedThrough = false;
+}
 
 void Renderer::HouseLogic(){
     hasPassedThroughDoor();
@@ -376,7 +397,7 @@ void Renderer::HouseLogic(){
     WinningLogic();
 }
 
-
+/* MAIN GAME LOOP */
 void Renderer::startNextFrame()
 {
     // input to move, using translate to change the player objects position
@@ -396,7 +417,10 @@ void Renderer::startNextFrame()
     {
         Player->mMatrix.translate(0,-0.1,0);
     }
-
+    if(mInput->R)
+    {
+        resetGame();
+    }
 
     //OEF: Handling input from keyboard and mouse is done in VulkanWindow
     //Has to be done each frame to get smooth movement

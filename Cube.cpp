@@ -89,6 +89,7 @@ Cube::Cube(): VisualObject()
     //mMatrix.scale(0.5f);
     //mMatrix.translate(0.5f, 0.1f, 0.1f);
 };
+
 Cube::Cube(std::string name) {
     Vertex v1,v2,v3,v4,v5,v6,v7,v8;
     if(name=="Enemy"){
@@ -116,6 +117,7 @@ Cube::Cube(std::string name) {
         //r+g bak v4
         Vertex t8{1.0f,  1.0f, -1.0f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f};
         v8=t8;
+
     };
 
     if(name=="Pickup"){

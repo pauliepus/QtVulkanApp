@@ -18,6 +18,12 @@ VisualObject::VisualObject()
     mMatrix.setToIdentity();
 }
 
+VisualObject::~VisualObject()
+{
+    position = QVector3D(0,0,0);
+    mMatrix.setToIdentity();
+}
+
 void VisualObject::move(float x, float y, float z)
 {
     mMatrix.translate(x, y, z);

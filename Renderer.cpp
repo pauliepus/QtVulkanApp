@@ -536,6 +536,13 @@ void Renderer::startNextFrame()
         }
     }
 
+    for (auto& obj : mObjects) {
+        if (obj->getName() == "Enemy") {
+            Cube* enemy = dynamic_cast<Cube*>(obj);
+            enemy->patrol();
+        }
+    }
+
     VkCommandBuffer commandBuffer = mWindow->currentCommandBuffer();
 
 	setRenderPassParameters(commandBuffer);

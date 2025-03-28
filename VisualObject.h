@@ -11,7 +11,7 @@ public:
     std::vector<Vertex> mVertices;
     inline std::vector<Vertex> getVertices() { return mVertices; }
     VisualObject();
-
+    virtual ~VisualObject();
 
     void updatePosition() {
         position = mMatrix.column(3).toVector3D(); // Extracts position from transformation matrix

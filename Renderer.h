@@ -95,14 +95,16 @@ protected:
 private:
     friend class VulkanWindow;
     int Pickups = 0;
-    int maxPickups = 1; //added for easier debug and testing.
+    int maxPickups = 7; //added for easier debug and testing.
     int pickupsCollected = 0;
+
     bool isWin = false;
     bool isOpen = false;
     bool hasPassedThrough = false;
     bool alreadyThrough = false;
     bool enemyTouched = false;
     bool alreadyLost=false;
+
     Triangle mTriangle;
     Cube mCube;
     Cube Enemy;
@@ -110,6 +112,7 @@ private:
     Cube* Player;
     House* House;
     Door* Door;
+
     Input* mInput;
     TriangleSurface mSurface;
     VisualObject mVisualObject;

@@ -58,17 +58,31 @@ Renderer::  Renderer(QVulkanWindow *w, bool msaa)
         std::string name = "Pickup";
         Cube* pickup = new Cube(std::string("Pickup"));
         mObjects.push_back(pickup);
-
+        pickup->scale(0.5);
         pickup->mMatrix.translate(rand()% 10,rand()% 10,0);
         pickup->setName("Pickup");
     }
 
     // Enemy creation
+    std::vector<Cube*> mEnemies;
+
+
     for(int o=0;o<5;o++)
     {
         Cube* Enemy = new Cube(std::string("Enemy"));
         mObjects.push_back(Enemy);
-        Enemy->mMatrix.translate(rand()% 12,rand()%20,0);
+        Enemy->mMatrix.translate(rand()% 25,rand()% 40,0);
+
+        float x1 = rand() % 20;
+        float y1 = rand() % 12;
+        float x2 = rand() % 20;
+        float y2 = rand() % 30;
+
+        Enemy->setPatrolPoints(QVector3D(x1, y1, 0), QVector3D(x2, y2, 0));
+
+        // Add the enemy to the mEnemies vector
+        mEnemies.push_back(Enemy);
+
         Enemy->setName("Enemy");
     }
 

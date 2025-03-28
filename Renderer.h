@@ -106,9 +106,9 @@ private:
     Triangle mTriangle;
     Cube mCube;
     Cube Enemy;
+    Cube* Win;
     Cube* Player;
     House* House;
-    Cube* Win;
     Door* Door;
     Input* mInput;
     TriangleSurface mSurface;

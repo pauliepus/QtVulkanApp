@@ -36,7 +36,6 @@ Renderer::  Renderer(QVulkanWindow *w, bool msaa)
 
     // pk 100325 // 2 hele helger til ngl //240325 blir kanskje ferdig???
 
-    //PC creation
 
     // Victory initialization
 
@@ -48,8 +47,7 @@ Renderer::  Renderer(QVulkanWindow *w, bool msaa)
     Win->move(doorPos.x() - 1.0f, doorPos.y() - 3.5f, doorPos.z() + 1.0f);
     Win->updatePosition();
 
-    // Win->enabled=false;
-
+    //PC creation
     Player = new Cube(std::string("Player"));
     mObjects.push_back(Player);
     Player->setName("Player");

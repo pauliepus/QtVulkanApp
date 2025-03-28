@@ -17,6 +17,8 @@ public:
         position = mMatrix.column(3).toVector3D(); // Extracts position from transformation matrix
     }
 
+    // legg til en for x for å gi tall
+    // for alle objekter elns for å teste
 
     void setName(std::string name);
     std::string getName() const;

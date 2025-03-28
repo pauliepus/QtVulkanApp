@@ -62,6 +62,7 @@ public:
     std::vector<VisualObject*>& getObjects() { return mObjects; }
     std::unordered_map<std::string, VisualObject*>& getMap() { return mMap; }
 
+    void setModelMatrix(QMatrix4x4 modelMatrix);
 protected:
 
     //Creates the Vulkan shader module from the precompiled shader files in .spv format

@@ -3,6 +3,8 @@
 #include <QFile>
 #include "VulkanWindow.h"
 #include "WorldAxis.h"
+#include "House.h"
+#include "Door.h"
 
 //Utility function for alignment:
 static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
@@ -12,9 +14,10 @@ static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
 
 
 /*** Renderer class ***/
-Renderer::Renderer(QVulkanWindow *w, bool msaa)
-	: mWindow(w)
+Renderer::  Renderer(QVulkanWindow *w, bool msaa)
+    : mWindow(w)
 {
+
     if (msaa) {
         const QList<int> counts = w->supportedSampleCounts();
         qDebug() << "Supported sample counts:" << counts;
@@ -27,26 +30,86 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
         }
     }
 
-    mObjects.push_back(new Triangle());
-    mObjects.push_back((new TriangleSurface()));
-    mObjects.push_back((new WorldAxis()));
+    TriangleSurface* tri = new TriangleSurface();
+    mObjects.push_back(tri); // just to have a triangle
 
-    mObjects.at(0)->setName("tri");
-    mObjects.at(0)->mColor = {0.2, 0.1, 0.8};
-    mObjects.at(1)->setName("quad");
-    mObjects.at(1)->mColor = {0.9, 0.1, 0.8};
-    mObjects.at(2)->setName("axis");
-    mObjects.at(2)->mColor = {0.0, 0.0, 0.0};
+
+    // pk 100325 // 2 hele helger til ngl //240325 blir kanskje ferdig???
+
+    //PC creation
+
+    // Victory initialization
+
+    Win = new Cube(std::string("Win"));
+    mObjects.push_back(Win);
+    Win->setName("Victory");
+    Win->mMatrix.scale(0.3);
+    Win->updatePosition();
+    Win->move(doorPos.x() - 1.0f, doorPos.y() - 3.5f, doorPos.z() + 1.0f);
+    Win->updatePosition();
+
+    // Win->enabled=false;
+
+    Player = new Cube(std::string("Player"));
+    mObjects.push_back(Player);
+    Player->setName("Player");
+
+    // Pickup creation
+    for(Pickups = 0; Pickups < maxPickups; Pickups++)
+    {
+        std::string name = "Pickup";
+        Cube* pickup = new Cube(std::string("Pickup"));
+        mObjects.push_back(pickup);
+
+        pickup->mMatrix.translate(rand()% 10,rand()% 10,0);
+        pickup->setName("Pickup");
+    }
+
+    // Enemy creation
+    for(int o=0;o<5;o++)
+    {
+        Cube* Enemy = new Cube(std::string("Enemy"));
+        mObjects.push_back(Enemy);
+        Enemy->mMatrix.translate(rand()% 12,rand()%20,0);
+        Enemy->setName("Enemy");
+    }
+
+    // House creation
+
+    House = new class House();
+    House->setName("House");
+    mObjects.push_back(House);
+    House->mMatrix.translate(10.0f,10.0f,0);
+
+
+    // Door creation
+
+    Door = new class Door();
+    Door->setName("Door");
+    mObjects.push_back(Door);
+    Door->move(12.33f,10.f,0);
+
+    // Position initializations- Already exist in header, here defined.
+    doorPos = Door->mMatrix.column(3).toVector3D();
+    playerPos = Player->mMatrix.column(3).toVector3D();
+
+
+    // naming things here keeping for reference.
+    // mObjects.at(0)->setName("Player");
+    // mObjects.at(1)->setName("Plane");
+    // mObjects.at(2)->setName("");
+
 
     // **************************************
     // Legger inn objekter i map
     // **************************************
     //std::string navn{"navn"}; // Skal VisualObject klassen få en navn-variabel?
+
     for (auto it=mObjects.begin(); it!=mObjects.end(); it++)
         mMap.insert(std::pair<std::string, VisualObject*>{(*it)->getName(),*it});
 
 	//Inital position of the camera
-    mCamera.setPosition(QVector3D(-1, -1, -4));
+    mCamera.setPosition(QVector3D(-10, -10,-25));
 
     //OEF: need access to our VulkanWindow so making a convenience pointer
     mVulkanWindow = dynamic_cast<VulkanWindow*>(w);
@@ -63,7 +126,7 @@ void Renderer::initResources()
     change so one buffer is sufficient regardless of the value of
     QVulkanWindow::CONCURRENT_FRAME_COUNT. */
 
-    // const int concurrentFrameCount = mWindow->concurrentFrameCount(); // 2 on Oles Machine
+    const int concurrentFrameCount = mWindow->concurrentFrameCount(); // 2 on Oles Machine
     const VkPhysicalDeviceLimits *pdevLimits = &mWindow->physicalDeviceProperties()->limits;
     const VkDeviceSize uniAlign = pdevLimits->minUniformBufferOffsetAlignment;
     qDebug("uniform buffer offset alignment is %u", (uint)uniAlign); //64 on Oles machine
@@ -78,7 +141,7 @@ void Renderer::initResources()
 	VkVertexInputBindingDescription vertexBindingDesc{};    //Updated to a more common way to write it
 	vertexBindingDesc.binding = 0;
 	vertexBindingDesc.stride = sizeof(Vertex);
-    vertexBindingDesc.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;      //always this when not using instanced data
+	vertexBindingDesc.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
     /********************************* Shader bindings: *********************************/
     //Descritpion of the attributes used for vertices in the shader
@@ -112,21 +175,16 @@ void Renderer::initResources()
 
     // Pipeline layout
     // Set up the push constant info
-    VkPushConstantRange pushConstantRange[2]{};    //Updated to more common way to write it
-    pushConstantRange[0].stageFlags = VK_SHADER_STAGE_VERTEX_BIT; // | VK_SHADER_STAGE_FRAGMENT_BIT;
-    pushConstantRange[0].offset = 0;
-    pushConstantRange[0].size = 16 * sizeof(float); // 16 floats for the model matrix
-
-    pushConstantRange[1].stageFlags = VK_SHADER_STAGE_VERTEX_BIT; // | VK_SHADER_STAGE_FRAGMENT_BIT;
-    pushConstantRange[1].offset = 16 * sizeof(float);             //The color comes after the 16 floats of the matrix
-    pushConstantRange[1].size = 3 * sizeof(float); // 3 floats for the color
-
+    VkPushConstantRange pushConstantRange{};    //Updated to more common way to write it
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    pushConstantRange.offset = 0;
+    pushConstantRange.size = 16 * sizeof(float); // 16 floats for the model matrix
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutInfo.setLayoutCount = 0;
-    pipelineLayoutInfo.pushConstantRangeCount = 2;                  // sizeof(pcr) / sizeof(pcr[0]);
-    pipelineLayoutInfo.pPushConstantRanges = pushConstantRange;     // OEF: PushConstants update
+    pipelineLayoutInfo.pushConstantRangeCount = 1;  // OEF: PushConstants update
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange; // OEF: PushConstants update
     result = mDeviceFunctions->vkCreatePipelineLayout(logicalDevice, &pipelineLayoutInfo, nullptr, &mPipelineLayout);
     if (result != VK_SUCCESS)
         qFatal("Failed to create pipeline layout: %d", result);
@@ -244,6 +302,16 @@ void Renderer::initResources()
     getVulkanHWInfo(); // if you want to get info about the Vulkan hardware
 }
 
+// Victory creation
+void Renderer::WinningLogic(){
+    if(hasPassedThrough){
+
+        Win->mMatrix.rotate(0.5f,1.f,0.f);
+
+        qDebug() << "Moving"; // for å sjekke
+    }
+}
+
 // This function is called at startup and when the app window is resized
 void Renderer::initSwapChainResources()
 {
@@ -258,12 +326,217 @@ void Renderer::initSwapChainResources()
     mCamera.perspective(45.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
 }
 
+void Renderer::hasPassedThroughDoor(){
+    hasPassedThrough=true;
+    Win->updatePosition();
+
+    //helt ærlig, er det her mulig ubrukelig,
+}
+
+void Renderer::setPlayerInHouse(){
+    Player->mMatrix.scale(0.2f); //value between 0 and 1.0f to enlarge/shrink
+    Door->position = doorPos;
+    Player->mMatrix.setColumn(3, QVector4D(doorPos.x(), doorPos.y() + 1.0f, doorPos.z(), 1.0f));
+}
+
+void Renderer::setCameraInHouse(){
+    const QSize sz = mWindow->swapChainImageSize();
+    // use viewmatrix scaling instead
+
+   // mProjectionMatrix.scale(0.2f, 0.2f, -2.0f);
+   // mCamera.perspective(15.0f, sz.width() / (float) sz.height(), 2.0f, 30.0f);
+   // mCamera.setPosition(QVector3D(-15,-20,-5));
+
+    mCamera.setPosition(QVector3D(-doorPos.x(), -doorPos.y() - 1.0f, doorPos.z() - 2.5f));
+    //mCamera.lookAt({-doorPos.x(), -doorPos.y() - 1.0f, doorPos.z() - 2.0f}, Player->position,{0,0,-1});
+}
+
+//     touch door-
+//     guy shrinks+tps infront of door inside house
+//     camera tps above door looking inside
+//     win box spawns inside, relative to door pos (also shrunk)
+
+
+void Renderer::HouseLogic(){
+    hasPassedThroughDoor();
+    setCameraInHouse();
+    setPlayerInHouse();
+    WinningLogic();
+}
+
+
 void Renderer::startNextFrame()
 {
-    //OEF: Handeling input from keyboard and mouse is done in VulkanWindow
+    // input to move, using translate to change the player objects position
+    if(mInput->A)
+    {
+        Player->mMatrix.translate(-.1,0,0);
+    }
+    if(mInput->D)
+    {
+        Player->mMatrix.translate(0.1,0,0);
+    }
+    if(mInput->W)
+    {
+        Player->mMatrix.translate(0,0.1,0);
+    }
+    if(mInput->S)
+    {
+        Player->mMatrix.translate(0,-0.1,0);
+    }
+
+
+    //OEF: Handling input from keyboard and mouse is done in VulkanWindow
     //Has to be done each frame to get smooth movement
-    mVulkanWindow->handleInput();
-    mCamera.update();               //input can have moved the camera
+
+    //this handleinput is used for the camera.
+
+    mVulkanWindow->handleInput();   //handling input to move camera
+    mCamera.update();               //Updates camera to receive input to move camera
+
+    /*
+     * AABB collision detection.
+     * This in essence holds two separate object arrays
+     * of [i] and of [j]. the floats repressent values of the objects' positions.
+     * the double for()loops are to see if they overlap,
+     * and the if() right underneath decides the overlaps.
+     *  Another if statement based on [i]->getName() of both objects is called
+     * to set the enabled bool to false, effectively removing the object from existence.
+     */
+
+    for(int i=0; i<mObjects.size();i++){
+        for(int j=0;j<mObjects.size();j++){
+
+            float x1 = mObjects[i]->mMatrix.column(3).x() + 0.5;
+            float x2 = mObjects[i]->mMatrix.column(3).x() - 0.5;
+            float y1 = mObjects[i]->mMatrix.column(3).y() + 0.5;
+            float y2 = mObjects[i]->mMatrix.column(3).y() - 0.5;
+            float z1 = mObjects[i]->mMatrix.column(3).z() + 0.5;
+            float z2 = mObjects[i]->mMatrix.column(3).z() - 0.5;
+
+            float x1_ = mObjects[j]->mMatrix.column(3).x()  - 0.5; // other
+            float x2_ = mObjects[j]->mMatrix.column(3).x()  + 0.5;
+            float y1_ = mObjects[j]->mMatrix.column(3).y()  - 0.5;
+            float y2_ = mObjects[j]->mMatrix.column(3).y()  + 0.5;
+            float z1_ = mObjects[j]->mMatrix.column(3).z()  - 0.5;
+            float z2_ = mObjects[j]->mMatrix.column(3).z()  + 0.5;
+
+            if (
+                x1 > x1_ &&
+                x2 < x2_ &&
+                y1 > y1_ &&
+                y2 < y2_ &&
+                z1 > z1_ &&
+                z2 < z2_
+                && mObjects[i]->enabled
+                && mObjects[j]->enabled
+            )
+
+            {
+
+                //logic for touching pickups
+                if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Pickup"){
+                    mObjects[j]->enabled = false;
+
+                    pickupsCollected++;
+                    qDebug() << "Picked up! Total pickups collected:"
+                             << pickupsCollected << ". Get " << maxPickups << "!";
+
+                    // welp, it uhh. works. The hitbox(actually- object) wasn't removed,
+                    // so it just kept going and going lol.
+
+                    // mObjects.erase(mObjects.begin() + j);
+                    // j--;
+                    // this fixes my comment above
+                }
+
+                //logic for touching enemies
+                if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Enemy"){
+
+                    mObjects[j]->enabled = false;
+                    mObjects[i]->enabled = false;
+                    enemyTouched = true;
+
+                }
+
+                // logic for touching Win box
+                if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Win"){
+                    mObjects[j]->enabled = false; //
+                    //mObjects.erase(mObjects.begin() +j);
+                    isWin=true;
+                    // mObjects.erase(mObjects.begin() + i);
+                    // i--;
+
+                }
+
+                //logic for "touching" door
+                if(isOpen==true){
+                    if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Door"){
+
+                        /* To not keep teleporting/shrinkin somewhere */
+                        if(!alreadyThrough){
+                            HouseLogic();
+
+                            //add logic to make inner house walls solid: Nope- not creating normals.
+                            //add logic to move camera
+                            //add logic to create a pickup here. / or in house logic.
+
+                            alreadyThrough=true;
+                            }
+                        }
+                    }
+
+                /* Activates Door */
+                if(pickupsCollected >= maxPickups){
+                    isOpen=true; //door active bool
+                    Door->mMatrix.rotate(0.5f,0.f,0.f,3.f);
+                }
+            }
+        }
+    }
+
+    //So- I now definitely understand *why* we'd use functions here instead.
+
+    if(enemyTouched==true){
+        if(!alreadyLost){
+            for(int o=0;o<3;o++)
+                qDebug() << "You got caught! You lose.";
+            alreadyLost=true;
+        }
+    }
+
+    if(isWin==true){
+        static bool alreadyWon = false;
+        if(!alreadyWon){
+            for(int o=0;o<3;o++)
+                qDebug()<<"Y O U  W I N! ! ! ";
+            alreadyWon=true;
+        }
+    }
+
+    // Am I creating an infinite loop here as well then?
+    //    -yes I was. e2: Likely still am
+    // for loop "0<3" (<.<\'
+
+    /* Stops the qDebug print from appearing more than 4
+     * times w/ isOpen and alreadyPrinted */
+    //okay, finally fixed this too.
+
+    if(isOpen==true){
+        static bool alreadyPrinted = false;
+        if(!alreadyPrinted){
+            for(int o=0;o<4;o++)
+               qDebug()<<"Door's OPEN!";
+            alreadyPrinted=true;
+            Win->enabled=true;
+            /*
+             * this could be done better, if I made a separate function for
+             * alreadyPrinted, I'd stick to Linus Torvald's words.
+             * "if you use more than 3 indents, you suck at coding"
+             * Good thing I really do suck at coding :D
+             */
+        }
+    }
 
     VkCommandBuffer commandBuffer = mWindow->currentCommandBuffer();
 
@@ -274,21 +547,24 @@ void Renderer::startNextFrame()
     /********************************* Our draw call!: *********************************/
     for (std::vector<VisualObject*>::iterator it=mObjects.begin(); it!=mObjects.end(); it++)
     {
-         if ((*it)->drawType == 0)
-            mDeviceFunctions->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipeline1);
-         else
-            mDeviceFunctions->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipeline2);
+        if((*it)->enabled==false){
+            continue;
+        }
+		if ((*it)->drawType == 0)
+			mDeviceFunctions->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipeline1);
+		else
+			mDeviceFunctions->vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, mPipeline2);
 
         mDeviceFunctions->vkCmdBindVertexBuffers(commandBuffer, 0, 1, &(*it)->mBuffer, &vbOffset);
-        pushConstants(mCamera.cMatrix() * (*it)->mMatrix, (*it)->mColor);
+        setModelMatrix(mCamera.cMatrix() * (*it)->mMatrix);
         mDeviceFunctions->vkCmdDraw(commandBuffer, (*it)->mVertices.size(), 1, 0, 0);
     }
     /***************************************/
 
     mDeviceFunctions->vkCmdEndRenderPass(commandBuffer);
+    //rotate functions
+    //mObjects.at(1)->rotate(1.0f, 0.0f, 0.0f, 1.0f);
 
-    mObjects.at(1)->rotate(1.0f, 0.0f, 0.0f, 1.0f);
-    
     mWindow->frameReady();
     mWindow->requestUpdate(); // render continuously, throttled by the presentation rate
 }
@@ -305,7 +581,8 @@ VkShaderModule Renderer::createShader(const QString &name)
     QByteArray blob = file.readAll();
     file.close();
 
-    VkShaderModuleCreateInfo shaderInfo{};
+    VkShaderModuleCreateInfo shaderInfo;
+    memset(&shaderInfo, 0, sizeof(shaderInfo));
     shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
     shaderInfo.codeSize = blob.size();
     shaderInfo.pCode = reinterpret_cast<const uint32_t *>(blob.constData());
@@ -319,16 +596,11 @@ VkShaderModule Renderer::createShader(const QString &name)
     return shaderModule;
 }
 
-void Renderer::pushConstants(QMatrix4x4 modelMatrix, QVector3D color)
+void Renderer::setModelMatrix(QMatrix4x4 modelMatrix)
 {
-    float tempArray[19]{};
-    QMatrix4x4 tempMatrix = modelMatrix.transposed();
-    tempMatrix.copyDataTo(tempArray);
-    tempArray[16] = color.x();
-    tempArray[17] = color.y();
-    tempArray[18] = color.z();
+
 	mDeviceFunctions->vkCmdPushConstants(mWindow->currentCommandBuffer(), mPipelineLayout, 
-        VK_SHADER_STAGE_VERTEX_BIT, 0, 19 * sizeof(float), tempArray);
+        VK_SHADER_STAGE_VERTEX_BIT, 0, 16 * sizeof(float), modelMatrix.constData());
 }
 
 void Renderer::setRenderPassParameters(VkCommandBuffer commandBuffer)
@@ -375,6 +647,7 @@ void Renderer::setRenderPassParameters(VkCommandBuffer commandBuffer)
 // If we want to have more objects, we need to initialize buffers for each of them
 // This version is not a version with encapsulation
 // We use the VisualObject members mBuffer and mBufferMemory
+
 void Renderer::createBuffer(VkDevice logicalDevice, const VkDeviceSize uniAlign,
                                 VisualObject* visualObject, VkBufferUsageFlags usage)
 {
@@ -512,7 +785,7 @@ void Renderer::releaseResources()
         mDeviceFunctions->vkFreeMemory(dev, mVisualObject.mBufferMemory, nullptr);
         mVisualObject.mBufferMemory = VK_NULL_HANDLE;
     }
-    // Samme for alle objekter i container
+    // Same for every object in container
     for (auto it=mObjects.begin(); it!=mObjects.end(); it++) {
         if ((*it)->mBuffer) {
             mDeviceFunctions->vkDestroyBuffer(dev, (*it)->mBuffer, nullptr);

@@ -6,6 +6,10 @@
 #include <unordered_map>
 #include "Camera.h"
 #include "Triangle.h"
+#include "Cube.h"
+#include "House.h"
+#include "Door.h"
+#include "Input.h"
 #include "TriangleSurface.h"
 #include "VisualObject.h"
 
@@ -14,7 +18,26 @@ class Renderer : public QVulkanWindowRenderer
 public:
     Renderer(QVulkanWindow *w, bool msaa = false);
 
-    //Initializes the Vulkan resources needed,
+    // * These two functions are set for visibility, I hope this isn't inefficient.
+    /*
+     * scales, moves cam, and changes perspective.
+     */
+    void setPlayerInHouse();
+     /* These two functions are set for visibility, I hope this isn't inefficient.
+     *
+     *  scales the player down, and moves player inside the house.
+     */
+    void setCameraInHouse();
+
+    void HouseLogic(); //The () ran that uses the two above functions.
+    void WinningLogic();
+
+    QVector3D doorPos;   // Finding door position
+    QVector3D playerPos;   // Finding player position
+
+    void hasPassedThroughDoor(); // USED function for a door bool
+
+    // Initializes the Vulkan resources needed,
     // the buffers
     // vertex descriptions for the shaders
     // making the shaders, etc
@@ -59,7 +82,7 @@ protected:
 
     VkDeviceMemory mBufferMemory{ VK_NULL_HANDLE };
     VkBuffer mBuffer{ VK_NULL_HANDLE };
- 
+
     VkDescriptorPool mDescriptorPool{ VK_NULL_HANDLE };
     VkDescriptorSetLayout mDescriptorSetLayout{ VK_NULL_HANDLE };
     VkDescriptorSet mDescriptorSet[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT]{ VK_NULL_HANDLE };
@@ -71,7 +94,23 @@ protected:
 
 private:
     friend class VulkanWindow;
+    int Pickups = 0;
+    int maxPickups = 1; //added for easier debug and testing.
+    int pickupsCollected = 0;
+    bool isWin = false;
+    bool isOpen = false;
+    bool hasPassedThrough = false;
+    bool alreadyThrough = false;
+    bool enemyTouched = false;
+    bool alreadyLost=false;
     Triangle mTriangle;
+    Cube mCube;
+    Cube Enemy;
+    Cube* Player;
+    House* House;
+    Cube* Win;
+    Door* Door;
+    Input* mInput;
     TriangleSurface mSurface;
     VisualObject mVisualObject;
     std::vector<VisualObject*> mObjects;

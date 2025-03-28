@@ -15,9 +15,13 @@ qt_add_executable(QtVulkanApp
     VisualObject.h VisualObject.cpp
     Vertex.h Vertex.cpp
     Camera.h Camera.cpp
+    PKPlayerCharacter.h PKPlayerCharacter.cpp
     Triangle.h Triangle.cpp
     Input.h
     WorldAxis.h WorldAxis.cpp
+    Cube.h Cube.cpp
+    House.h House.cpp
+    Door.h Door.cpp
 )
 # Define the shader files
 set(SHADER_FILES

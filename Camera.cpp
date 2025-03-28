@@ -21,7 +21,7 @@ void Camera::lookAt(const QVector3D &eye, const QVector3D &at, const QVector3D &
     mAt = at;
     mUp = up;
     mViewMatrix.setToIdentity();
-    mViewMatrix.lookAt(mEye, mAt, mUp);
+    mViewMatrix.lookAt(mEye, mAt, mUp); //Note: use this for camera location instead?
 }
 
 void Camera::pitch(float degrees)
@@ -38,11 +38,11 @@ void Camera::update()
 {
 	mViewMatrix.setToIdentity();
 	mPosition.setZ(mPosition.z() + mSpeed);
-    mViewMatrix.translate(mPosition);               //Makes rotation work around World Origo
+    //mViewMatrix.translate(mPosition);               //Makes rotation work around World Origo
     mViewMatrix.rotate(mYaw, 0.f, 1.f, 0.f);
 	mViewMatrix.rotate(mPitch, 1.f, 0.f, 0.f);    
     //mViewMatrix.rotate(mYaw, 0.f, 1.f, 0.f);      //pitch then yaw makes camera wonkey
-	//mViewMatrix.translate(mPosition);             //Makes rotation work around Camera Origo
+    mViewMatrix.translate(mPosition);             //Makes rotation work around Camera Origo
 }
 
 void Camera::setPosition(const QVector3D& position)

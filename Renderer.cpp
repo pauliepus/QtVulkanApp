@@ -103,6 +103,7 @@ Renderer::  Renderer(QVulkanWindow *w, bool msaa)
     Door->move(12.33f,10.f,0);
 
     // Position initializations- Already exist in header, here defined.
+
     doorPos = Door->mMatrix.column(3).toVector3D();
     playerPos = Player->mMatrix.column(3).toVector3D();
 
@@ -372,13 +373,12 @@ void Renderer::resetGame(){
 
     Player->mMatrix.setToIdentity();
     Player->mMatrix.translate(0.0f, 0.0f, 0.0f);
-    Player->setName("Player");
 
     for (auto& pickup : mObjects) {
         if (pickup->getName() == "Pickup") {
             pickup->mMatrix.setToIdentity();
             mObjects.push_back(pickup);
-            pickup->mMatrix.translate(rand() % 25, rand() % 40, 0);
+            //pickup->mMatrix.translate(rand() % 25, rand() % 40, 0);
         }
     }
 
@@ -498,8 +498,8 @@ void Renderer::startNextFrame()
                 // logic for touching Win box
                 if(mObjects[i]->getName() == "Player" && mObjects[j]->getName() == "Win"){
                     mObjects[j]->enabled = false; //
-                    //mObjects.erase(mObjects.begin() +j);
                     isWin=true;
+                    //mObjects.erase(mObjects.begin() +j);
                     // mObjects.erase(mObjects.begin() + i);
                     // i--;
 

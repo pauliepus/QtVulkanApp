@@ -1,10 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(QtVulkanApp LANGUAGES CXX)
-set(EIGEN3_INCLUDE_DIR "C:/Libraries/eigen-3.4.0/cmake/Eigen3Config.cmake.in")
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
-find_package(Eigen3 REQUIRED NO_DEFAULT_PATH PATHS ${EIGEN3_INCLUDE_DIR})
-include_directories(${EIGEN3_INCLUDE_DIR})
 
 qt_standard_project_setup()
 
@@ -28,6 +25,10 @@ set(SHADER_FILES
     color.frag
     color.vert
 )
+set(EIGEN3_INCLUDE_DIR "C:/Libraries/eigen-3.4.0/cmake/Eigen3Config.cmake.in")
+
+find_package(Eigen3 REQUIRED NO_DEFAULT_PATH PATHS ${EIGEN3_INCLUDE_DIR})
+include_directories(${EIGEN3_INCLUDE_DIR})
 
 # Add the shader files to the project
 add_custom_target(Shaders

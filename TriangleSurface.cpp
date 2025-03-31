@@ -3,10 +3,17 @@
 #include <QDebug>
 TriangleSurface::TriangleSurface() : VisualObject()
 {
-    Vertex v1{ 0.0f,  0.0f,  0.0f,   1.0f, 0.0f, 0.0f,  0.0f, 0.0f};  //  bottom-left corner
-	Vertex v2{ 1.0f,  0.0f,  0.0f,   0.0f, 1.0f, 0.0f,  1.0f, 0.0f }; //  bottom-right corner
-	Vertex v3{ 0.0f,  1.0f,  0.0f,   0.0f, 0.0f, 1.0f,  0.0f, 1.0f }; //  top-left corner
-	Vertex v4{ 1.0f,  1.0f,  0.0f,   1.0f, 1.0f, 0.0f,  1.0f, 1.0f }; //  top-right corner
+    Vertex v1{ 0.0f,  0.0f,  0.0f,   1.0f, 0.0f, 0.0f,  0.0f, 1.0f};  //  bottom-left corner
+    Vertex v2{ 1.0f,  0.0f,  0.0f,   0.0f, 1.0f, 0.0f,  1.0f, 1.0f }; //  bottom-right corner
+    Vertex v3{ 0.0f,  1.0f,  0.0f,   0.0f, 0.0f, 1.0f,  0.0f, 0.0f }; //  top-left corner
+    Vertex v4{ 1.0f,  1.0f,  0.0f,   1.0f, 1.0f, 0.0f,  1.0f, 0.0f }; //  top-right corner
+
+    // The end-point of the image gets translated depending on the U value
+    // and it looks like the V value decides which vertice to start at, since V1 is first;
+    // As opposed to having V3 (top-left vert) start + v4, the bottom left and bot right ones
+    // Made the image get flipped.
+
+    // Seems my hypothesis is *partially* correct. But- I don't know why. Ech.
 
     //Pushing 1st triangle,
     mVertices.push_back(v1);

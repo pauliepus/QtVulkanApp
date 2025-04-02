@@ -1,0 +1,25 @@
+    QVector3D barycentricCoordinates(const QVector2D& dette, const QVector2D& p1, const QVector2D& p2, const QVector2D& p3)
+    {
+        QVector2D p12 = p2-p1;
+        QVector2D p13 = p3-p1;
+        QVector3D n = QVector3D::crossProduct(p12, p13);
+        float areal_123 = n.length(); // dobbelt areal
+        QVector3D baryc; // til retur. Husk
+        // u
+        QVector2D p = p2 - dette;
+        QVector2D q = p3 - dette;
+        n = QVector3D::crossProduct(p,q);
+        baryc.setX(n.z()/areal_123);
+        // v
+        p = p3 - dette;
+        q = p1 - dette;
+        
+        n = QVector3D::crossProduct(p,q);
+        baryc.setY(n.z()/areal_123);
+        // w
+        p = p1 - dette;
+        q = p2 - dette;
+        n = QVector3D::crossProduct(p,q);
+        baryc.setZ(n.z()/areal_123);
+        return baryc;
+    }

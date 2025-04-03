@@ -36,7 +36,7 @@ void quadraticLeastSquares(const std::vector<Point>& points, double& a, double& 
     c = X(2);
 }
 
-int main() {
+int main2Electricboogaloo() {
     std::vector<Point> points = { {1, 2}, {2, 2.5}, {3, 3.5}, {4, 5.0}, {5, 6.8} };
 
     double a, b, c;

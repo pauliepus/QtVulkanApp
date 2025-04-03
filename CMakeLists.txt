@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(QtVulkanApp LANGUAGES CXX)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
-
+find_package(Eigen3 REQUIRED)
 qt_standard_project_setup()
 
 qt_add_executable(QtVulkanApp
@@ -19,12 +19,18 @@ qt_add_executable(QtVulkanApp
     Input.h
     WorldAxis.h WorldAxis.cpp
     Triangulation.h
+
+    linearLeastSquares.cpp
+    quadraticLeastSquares.cpp
+
 )
 # Define the shader files
 set(SHADER_FILES
     color.frag
     color.vert
 )
+#
+set(Eigen3_DIR "C:/Libraries/eigen-3.4.0/cmake")
 
 # Add the shader files to the project
 add_custom_target(Shaders
@@ -36,10 +42,12 @@ set_target_properties(QtVulkanApp PROPERTIES
     MACOSX_BUNDLE TRUE
 )
 
+target_include_directories(QtVulkanApp PRIVATE "C:/Libraries/eigen-3.4.0")
 target_link_libraries(QtVulkanApp PRIVATE
     Qt6::Core
     Qt6::Gui
     Qt6::Widgets
+    Eigen3::Eigen
 )
 
 # Resources:
@@ -92,5 +100,5 @@ add_custom_target(
 
 add_dependencies(QtVulkanApp PreBuildCommandF)
 add_dependencies(QtVulkanApp PreBuildCommandV)
-
+add_dependencies(QtVulkanApp Eigen3::Eigen)
 

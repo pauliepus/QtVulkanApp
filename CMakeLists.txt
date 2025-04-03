@@ -22,6 +22,7 @@ qt_add_executable(QtVulkanApp
 
     linearLeastSquares.cpp
     quadraticLeastSquares.cpp
+    game_tech_least_squares_mixed.csv
 
 )
 # Define the shader files

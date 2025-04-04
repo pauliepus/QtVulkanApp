@@ -13,6 +13,7 @@ class Renderer : public QVulkanWindowRenderer
 {
 public:
     Renderer(QVulkanWindow *w, bool msaa = false);
+    std::vector<Vertex> curveVertices;
 
     //Initializes the Vulkan resources needed,
     // the buffers

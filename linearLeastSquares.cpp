@@ -5,10 +5,12 @@
 #include <string>
 #include "Vertex.h"
 
-    double x, y;
+struct Point{
+
+    double x;
+    double y;
 
 };
-
 
 // Function to compute linear least squares
 void linearLeastSquares(const std::vector<Point>& points, double& Beta1, double& Beta0) {
@@ -29,7 +31,7 @@ void linearLeastSquares(const std::vector<Point>& points, double& Beta1, double&
 void ReadFromFile(const std::string& filename)
 {
     std::vector<std::vector<std::string>> sPoints;  //vector of vectors of points as strings
-    std::vector<Point> points;                        // vector of points
+    std::vector<Point> points;                      // vector of points
     std::vector<std::string> tempVector;            // temporary vector to store single strings of points
     std::string tempString;
     std::string::size_type SZ;
@@ -51,12 +53,17 @@ void ReadFromFile(const std::string& filename)
     std::string line;
     while (file.peek() !=EOF)
     {
-        Point temp;
+        points temp;
+
         file >> temp.x;
         file >> temp.y;
-        points.emplace_back(temp);
-
+        points.emplace_back(temp(x,y));
     }
+
+    std::vector<Vertex> curveVertices;
+
+    // while (file >> tempPt.x >> tempPt.y) {
+    // }
 
     file.close();
 
@@ -70,17 +77,9 @@ void ReadFromFile(const std::string& filename)
     std::cout << points.size() << std::endl;
 }
 
-// std::vector<Vertex> curveVertices;
-
-// for (const auto& point : points) {
-//     curveVertices.push_back({
-//         QVector3D(points.x(), points.y(), 0.0f),  // Convert QVector2D → QVector3D (z = 0)
-//         QVector3D(1.0f, 0.0f, 0.0f)  // Red color for the line
-//     });
-// }
 
 int main() {
-    /* Original Vector for Points*/
+    /* Original Vector for Points */
     //std::vector<Point> points = {{1, 2}, {2, 2.8}, {3, 3.6}, {4, 4.5}, {5, 5.1}};
 
     ReadFromFile("C:/CurrentProject/QtVulkanApp/game_tech_least_squares_mixed.csv");

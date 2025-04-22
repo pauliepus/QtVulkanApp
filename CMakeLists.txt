@@ -22,6 +22,7 @@ qt_add_executable(QtVulkanApp
     Cube.h Cube.cpp
     House.h House.cpp
     Door.h Door.cpp
+    ObjMesh.cpp ObjMesh.h
 )
 # Define the shader files
 set(SHADER_FILES

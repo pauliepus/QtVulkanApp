@@ -45,10 +45,12 @@ public:
 
     bool enabled=true;
 
-	int drawType{ 0 }; // 0 = fill, 1 = line
+    int drawType{ 0 }; // 0 = fill, 1 = line
+    inline std::vector<uint32_t> getIndices() const { return mIndices; }
 
 protected:
     std::string mName;
+    std::vector<uint32_t> mIndices;
 };
 
 #endif // VISUALOBJECT_H

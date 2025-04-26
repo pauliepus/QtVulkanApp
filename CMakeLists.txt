@@ -23,6 +23,7 @@ qt_add_executable(QtVulkanApp
     House.h House.cpp
     Door.h Door.cpp
     ObjMesh.cpp ObjMesh.h
+    stb_image.cpp stb_image.h texture.frag texture.vert texture_frag.spv texture_vert.spv
 )
 # Define the shader files
 set(SHADER_FILES

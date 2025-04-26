@@ -27,62 +27,6 @@ TriangleSurface::TriangleSurface() : VisualObject()
     mVertices.push_back(v1); //front-low-left
     mVertices.push_back(v2); //front-low-right
     mVertices.push_back(v3); //front-top-right
-//     //then the 2nd.
-//     mVertices.push_back(v3); //front-top-right
-//     mVertices.push_back(v2); //front-low-right
-//     mVertices.push_back(v4); //front-top-left
-
-// // square behind first
-//     mVertices.push_back(v6); //bak v1
-//     mVertices.push_back(v7);
-//     mVertices.push_back(v5);
-
-//     mVertices.push_back(v5); //bak 3
-//     mVertices.push_back(v7); //bak 2
-//     mVertices.push_back(v8); //bak 4
-
-
-// // square on top
-
-//     mVertices.push_back(v5);
-//     mVertices.push_back(v3);
-//     mVertices.push_back(v8);
-
-//     mVertices.push_back(v4);
-//     mVertices.push_back(v8);
-//     mVertices.push_back(v3);
-
-
-// // square on something
-
-//     mVertices.push_back(v5); // blå bak
-//     mVertices.push_back(v1); // rød
-//     mVertices.push_back(v6); // blå bak
-
-//     mVertices.push_back(v3);
-//     mVertices.push_back(v5);
-//     mVertices.push_back(v1);
-
-
-// //right side
-
-//     mVertices.push_back(v8);
-//     mVertices.push_back(v4);
-//     mVertices.push_back(v2);
-
-//     mVertices.push_back(v8);
-//     mVertices.push_back(v7);
-//     mVertices.push_back(v2);
-
-// // underside
-//     mVertices.push_back(v1);
-//     mVertices.push_back(v2);
-//     mVertices.push_back(v6);
-
-//     mVertices.push_back(v7);
-//     mVertices.push_back(v2);
-//     mVertices.push_back(v6);
-
 
     //Grid fill thing
     //husk, xz og ikke XY

@@ -21,14 +21,17 @@ qt_add_executable(QtVulkanApp
     WorldAxis.h WorldAxis.cpp
     Cube.h Cube.cpp
     House.h House.cpp
+    stb_image.cpp stb_image.h
     Door.h Door.cpp
     ObjMesh.cpp ObjMesh.h
-    stb_image.cpp stb_image.h texture.frag texture.vert texture_frag.spv texture_vert.spv
+    HeightMap.cpp HeightMap.h
+    hund.bmp
 )
 # Define the shader files
 set(SHADER_FILES
     color.frag
     color.vert
+    texture.frag texture.vert
 )
 
 # Add the shader files to the project
@@ -59,6 +62,8 @@ set_source_files_properties("color_vert.spv"
 set(QtVulkanApp_resource_files
     "color_frag.spv"
     "color_vert.spv"
+    "texture_frag.spv"
+    "texture_vert.spv"
 )
 
 qt_add_resources(QtVulkanApp "QtVulkanApp"

@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include <QVulkanFunctions>
 #include <QFile>
+#include "HeightMap.h"
 #include "VulkanWindow.h"
 #include "WorldAxis.h"
 #include "House.h"
@@ -46,6 +47,12 @@ Renderer::  Renderer(QVulkanWindow *w, bool msaa)
     Win->updatePosition();
     Win->move(doorPos.x() - 1.0f, doorPos.y() - 3.5f, doorPos.z() + 1.0f);
     Win->updatePosition();
+
+    //Heightmap creation
+
+    mObjects.push_back(new HeightMap());
+    static_cast<HeightMap*> (mObjects.back())->makeTerrain("../../hund.bmp");
+
 
     //PC creation
     Player = new Cube(std::string("Player"));

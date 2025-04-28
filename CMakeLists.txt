@@ -26,6 +26,9 @@ qt_add_executable(QtVulkanApp
     ObjMesh.cpp ObjMesh.h
     HeightMap.cpp HeightMap.h
     hund.bmp
+    Texture.cpp Texture.h
+    Utilities.h
+    Barycitrus.h Barycitrus.cpp
 )
 # Define the shader files
 set(SHADER_FILES

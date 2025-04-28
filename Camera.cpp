@@ -1,6 +1,8 @@
 #include "Camera.h"
 
-Camera::Camera() {}
+Camera::Camera() {
+    init();
+}
 
 void Camera::init()
 {
@@ -77,7 +79,7 @@ void Camera::rotate(float t, float x, float y, float z)
     mViewMatrix.rotate(t,x,y,z);
 }
 
-QMatrix4x4 Camera::cMatrix()
-{
-    return mProjectionMatrix * mViewMatrix;
-}
+// QMatrix4x4 Camera::cMatrix()
+// {
+//     return mProjectionMatrix * mViewMatrix;
+// }

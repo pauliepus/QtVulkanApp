@@ -27,13 +27,3 @@ void VisualObject::rotate(float t, float x, float y, float z)
 {
     mMatrix.rotate(t, x, y, z);
 }
-
-void VisualObject::setName(std::string name)
-{
-    mName = name;
-}
-
-std::string VisualObject::getName() const
-{
-    return mName;
-}

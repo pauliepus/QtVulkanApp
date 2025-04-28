@@ -2,8 +2,8 @@
 #include "Vertex.h"
 #include "stb_image.h"
 
-HeightMap::HeightMap()
-{ drawType = 1; }
+HeightMap::HeightMap(): VisualObject()
+{ drawType = 0; }
 
 void HeightMap::makeTerrain(std::string heightMapImage)
 {

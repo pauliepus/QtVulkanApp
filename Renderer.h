@@ -4,8 +4,11 @@
 #include <QVulkanWindow>
 #include <vector>
 #include <unordered_map>
-#include "Camera.h"
+#include "Barycitrus.h"
+#include "HeightMap.h"
 #include "Triangle.h"
+#include "Camera.h"
+#include "Utilities.h"
 #include "Cube.h"
 #include "House.h"
 #include "Door.h"
@@ -55,6 +58,11 @@ public:
 
     //Render the next frame
     void startNextFrame() override;
+    //Utility function for alignment:
+    static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
+    {
+        return (v + byteAlign - 1) & ~(byteAlign - 1);
+    }
 
     //Get Vulkan info - just for fun
     void getVulkanHWInfo();
@@ -67,9 +75,11 @@ protected:
     //Creates the Vulkan shader module from the precompiled shader files in .spv format
     VkShaderModule createShader(const QString &name);
 
-	void setModelMatrix(QMatrix4x4 modelMatrix);
+    void setModelMatrix(QMatrix4x4 modelMatrix);
+    void setViewProjectionMatrix();
+    void setTexture(TextureHandle& textureHandle, VkCommandBuffer commandBuffer);
 
-	void setRenderPassParameters(VkCommandBuffer commandBuffer);
+    void setRenderPassParameters(VkCommandBuffer commandBuffer);
 
     //The ModelViewProjection MVP matrix
     QMatrix4x4 mProjectionMatrix;
@@ -83,17 +93,25 @@ protected:
     VkDeviceMemory mBufferMemory{ VK_NULL_HANDLE };
     VkBuffer mBuffer{ VK_NULL_HANDLE };
 
+    //For Uniform buffers
     VkDescriptorPool mDescriptorPool{ VK_NULL_HANDLE };
     VkDescriptorSetLayout mDescriptorSetLayout{ VK_NULL_HANDLE };
-    VkDescriptorSet mDescriptorSet[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT]{ VK_NULL_HANDLE };
+    VkDescriptorSet mDescriptorSet{ VK_NULL_HANDLE }; // [QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT] { VK_NULL_HANDLE };
+
+    //For Textures
+    VkDescriptorPool mTextureDescriptorPool{ VK_NULL_HANDLE };
+    VkDescriptorSetLayout mTextureDescriptorSetLayout{ VK_NULL_HANDLE };
+    VkSampler mTextureSampler{ VK_NULL_HANDLE };
 
     VkPipelineCache mPipelineCache{ VK_NULL_HANDLE };
     VkPipelineLayout mPipelineLayout{ VK_NULL_HANDLE };
     VkPipeline mPipeline1{ VK_NULL_HANDLE };
     VkPipeline mPipeline2{ VK_NULL_HANDLE };
 
+    VkQueue mGraphicsQueue{ VK_NULL_HANDLE };
 private:
-    friend class VulkanWindow;
+
+    /* game logic */
 
     int Pickups = 0;
     int maxPickups = 7; //added for easier debug and testing.
@@ -113,21 +131,63 @@ private:
     Cube* Player;
     House* House;
     Door* Door;
+    Barycitrus* Bary;
+    HeightMap* Map;
+
 
     void resetGame();
-
     Input* mInput;
+    /*************' Game stuff end ****************/
+
+// Renderer things
+
+    friend class VulkanWindow;
     TriangleSurface mSurface;
     VisualObject mVisualObject;
     std::vector<VisualObject*> mObjects;
     std::unordered_map<std::string, VisualObject*> mMap;    // alternativ container
 
+    std::vector<class Texture*> mTextures;  //All textures in the program - not used now
+
+    Camera mCamera;
+    class VulkanWindow* mVulkanWindow{ nullptr };
+
     void createBuffer(VkDevice logicalDevice,
                       const VkDeviceSize uniAlign, VisualObject* visualObject,
                       VkBufferUsageFlags usage=VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 
-    Camera mCamera;
-    class VulkanWindow* mVulkanWindow{ nullptr };
+    //Start of Uniforms and DescriptorSets
+    void createVertexBuffer(const VkDeviceSize uniformAlignment, VisualObject* visualObject);
+    void createIndexBuffer(const VkDeviceSize uniformAlignment, VisualObject* visualObject);
+    void createUniformBuffer();
+    void createDescriptorSetLayouts();
+    void createDescriptorSet();
+    void createDescriptorPools();
+    void destroyBuffer(BufferHandle handle);
+
+    void createTextureSampler();
+    TextureHandle createTexture(const char* filename);
+    TextureHandle createImage(int width, int height, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkFormat format);
+    void transitionImageLayout(VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout);
+    void copyBufferToImage(VkBuffer buffer, VkImage image, int width, int height);
+    VkImageView createImageView(VkImage image, VkFormat format);
+
+    void destroyTexture(TextureHandle& textureHandle);
+    BufferHandle mUniformBuffer{};
+    void* mUniformBufferLocation{ nullptr };
+
+    //Texture variables
+
+    VkSurfaceFormatKHR mSurfaceFormat{};
+
+    TextureHandle mTextureHandle{};
+
+    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags requiredProperties);
+
+    BufferHandle createGeneralBuffer(const VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
+
+    VkCommandBuffer beginTransientCommandBuffer();
+    void endTransientCommandBuffer(VkCommandBuffer commandBuffer);
 
     // Color shader material / shader
     struct {

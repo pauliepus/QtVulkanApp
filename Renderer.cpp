@@ -118,7 +118,7 @@ Renderer::  Renderer(QVulkanWindow *w, bool msaa)
     //bary
     float t =0;
     t=Bary->getPositionInTerrain(*Map,Player->getPosition().x(),Player->getPosition().z());
-    Player->setPosition(0.0,t,0.0);
+    Player->setPosition(10.0,t,10.0);
 
 
     // naming things here keeping for reference.

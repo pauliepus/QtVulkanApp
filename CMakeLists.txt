@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(QtVulkanApp LANGUAGES CXX)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
-find_package(Eigen3 REQUIRED)
+
 qt_standard_project_setup()
 
 qt_add_executable(QtVulkanApp
@@ -15,23 +15,28 @@ qt_add_executable(QtVulkanApp
     VisualObject.h VisualObject.cpp
     Vertex.h Vertex.cpp
     Camera.h Camera.cpp
+    PKPlayerCharacter.h PKPlayerCharacter.cpp
     Triangle.h Triangle.cpp
     Input.h
     WorldAxis.h WorldAxis.cpp
-    Triangulation.h
-
-    linearLeastSquares.cpp
-    quadraticLeastSquares.cpp
-    game_tech_least_squares_mixed.csv
-
+    Cube.h Cube.cpp
+    House.h House.cpp
+    stb_image.cpp stb_image.h
+    Door.h Door.cpp
+    ObjMesh.cpp O
+    pushbacks.h pushbacks.cppbjMesh.h
+    HeightMap.cpp HeightMap.h
+    hund.bmp
+    Texture.cpp Texture.h
+    Utilities.h
+    Barycitrus.h Barycitrus.cpp
 )
 # Define the shader files
 set(SHADER_FILES
     color.frag
     color.vert
+    texture.frag texture.vert
 )
-#
-set(Eigen3_DIR "C:/Libraries/eigen-3.4.0/cmake")
 
 # Add the shader files to the project
 add_custom_target(Shaders
@@ -43,12 +48,10 @@ set_target_properties(QtVulkanApp PROPERTIES
     MACOSX_BUNDLE TRUE
 )
 
-target_include_directories(QtVulkanApp PRIVATE "C:/Libraries/eigen-3.4.0")
 target_link_libraries(QtVulkanApp PRIVATE
     Qt6::Core
     Qt6::Gui
     Qt6::Widgets
-    Eigen3::Eigen
 )
 
 # Resources:
@@ -63,6 +66,8 @@ set_source_files_properties("color_vert.spv"
 set(QtVulkanApp_resource_files
     "color_frag.spv"
     "color_vert.spv"
+    "texture_frag.spv"
+    "texture_vert.spv"
 )
 
 qt_add_resources(QtVulkanApp "QtVulkanApp"
@@ -101,4 +106,5 @@ add_custom_target(
 
 add_dependencies(QtVulkanApp PreBuildCommandF)
 add_dependencies(QtVulkanApp PreBuildCommandV)
-add_dependencies(QtVulkanApp Eigen3::Eigen)
+
+

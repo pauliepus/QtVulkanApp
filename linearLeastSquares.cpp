@@ -28,16 +28,13 @@ void linearLeastSquares(const std::vector<Point>& points, double& Beta1, double&
     Beta0 = ((Sy - Beta1 * Sx) / n);
 }
 
-void ReadFromFile(const std::string& filename)
+std::vector<Point> ReadFromFile(const std::string& filename)
 {
     std::vector<std::vector<std::string>> sPoints;  //vector of vectors of points as strings
     std::vector<Point> points;                      // vector of points
     std::vector<std::string> tempVector;            // temporary vector to store single strings of points
     std::string tempString;
     std::string::size_type SZ;
-
-    double tempX, tempY;
-    Point tempPoint;
 
     double a;
     double b;
@@ -47,7 +44,7 @@ void ReadFromFile(const std::string& filename)
     if (!file.is_open())
     {
         std::cerr << "Failed to open file: " << filename << std::endl;
-        return;
+        throw;
     }
 
     std::string line;
@@ -75,6 +72,7 @@ void ReadFromFile(const std::string& filename)
         std::cout << points[i].x << ", " << points[i].y << std::endl;
     }
     std::cout << points.size() << std::endl;
+    return points;
 }
 
 

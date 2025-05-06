@@ -53,11 +53,11 @@ void ReadFromFile(const std::string& filename)
     std::string line;
     while (file.peek() !=EOF)
     {
-        points temp;
+        Point temp;
 
         file >> temp.x;
         file >> temp.y;
-        points.emplace_back(temp(x,y));
+        points.emplace_back(temp);
     }
 
     std::vector<Vertex> curveVertices;

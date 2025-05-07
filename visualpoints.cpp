@@ -1,3 +1,8 @@
 #include "visualpoints.h"
 
-visualpoints::visualpoints() {}
+visualpoints::visualpoints() {
+
+
+
+
+}

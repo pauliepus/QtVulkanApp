@@ -12,11 +12,6 @@ struct Point{
 
 };
 
-std::vector<std::vector<std::string>> sPoints;  //vector of vectors of points as strings
-std::vector<std::string> tempVector;            // temporary vector to store single strings of points
-std::string tempString;
-std::string::size_type SZ;
-
 // Function to compute linear least squares
 void linearLeastSquares(const std::vector<Point>& points, double& Beta1, double& Beta0) {
     int n = points.size();
@@ -35,10 +30,14 @@ void linearLeastSquares(const std::vector<Point>& points, double& Beta1, double&
 
 std::vector<Point> ReadFromFile(const std::string& filename)
 {
-    std::vector<Point> points;
-    std::vector<Vertex> curveVertices;
+    std::vector<std::vector<std::string>> sPoints;  //vector of vectors of points as strings
+    std::vector<Point> points;                      // vector of points
+    std::vector<std::string> tempVector;            // temporary vector to store single strings of points
+    std::string tempString;
+    std::string::size_type SZ;
 
-    double a, b;
+    double a;
+    double b;
 
     std::ifstream file(filename);
 
@@ -48,32 +47,31 @@ std::vector<Point> ReadFromFile(const std::string& filename)
         throw;
     }
 
-    while (file.peek() != EOF)
+    std::string line;
+    while (file.peek() !=EOF)
     {
         Point temp;
-        file >> temp.x >> temp.y;
-        points.emplace_back(temp);
 
-        // Convert Point to Vertex
-        Vertex v;
-        v.x = temp.x;
-        v.y = temp.y;
-        v.z = 0.0f; // Or some logic here if z is needed
-        curveVertices.push_back(v);
+        file >> temp.x;
+        file >> temp.y;
+        points.emplace_back(temp);
     }
+
+    std::vector<Vertex> curveVertices;
+
+    // while (file >> tempPt.x >> tempPt.y) {
+    // }
 
     file.close();
 
-    linearLeastSquares(points, a, b);
+    linearLeastSquares(points,a,b);
     std::cout << "Best fit line: y = " << a << "x + " << b << std::endl;
 
-    for (const auto& p : points)
+    for (int i = 0; i < points.size(); i++)
     {
-        std::cout << p.x << ", " << p.y << std::endl;
+        std::cout << points[i].x << ", " << points[i].y << std::endl;
     }
-
     std::cout << points.size() << std::endl;
-
     return points;
 }
 

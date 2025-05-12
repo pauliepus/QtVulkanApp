@@ -39,6 +39,7 @@ Renderer::Renderer(QVulkanWindow *w, bool msaa)
     mObjects.at(4)->setName("suzanne");
     static_cast<HeightMap*>(mObjects.at(3))->makeTerrain(assetPath + "Heightmap.jpg");
 
+
     // **************************************
     // Objects in optional map
     // **************************************
@@ -266,6 +267,12 @@ void Renderer::initResources()
         qFatal("Failed to create graphics pipeline: %d", result);
 
 
+    VisualObject* mSurface;
+    VisualObject* mPlayer;
+    VisualObject* mNPC;
+    mPlayer = new TriangleSurface("cylinder.txt");
+    mSurface = new TriangleSurface;
+
 	// Destroying the shader modules, we won't need them anymore after the pipeline is created
     if (vertShaderModule)
         mDeviceFunctions->vkDestroyShaderModule(logicalDevice, vertShaderModule, nullptr);
@@ -350,7 +357,7 @@ void Renderer::startNextFrame()
     mDeviceFunctions->vkCmdEndRenderPass(commandBuffer);
 
     //Hardcoded!!!
-    mObjects.at(1)->rotate(1.0f, 0.0f, 0.0f, 1.0f);
+    //mObjects.at(1)->rotate(1.0f, 0.0f, 0.0f, 1.0f);
     
     mWindow->frameReady();
     mWindow->requestUpdate(); // render continuously, throttled by the presentation rate

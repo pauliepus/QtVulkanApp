@@ -1,14 +1,33 @@
 #include "TriangleSurface.h"
 #include <fstream>
 #include <QDebug>
+
 TriangleSurface::TriangleSurface() : VisualObject()
 {
+
+    Vertex v1{ 0.0f,  0.0f,  0.0f,   1.0f, 0.0f, 0.0f,  0.0f, 0.0f};  //  bottom-left corner
+    Vertex v2{ 1.0f,  0.0f,  0.0f,   0.0f, 1.0f, 0.0f,  1.0f, 0.0f }; //  bottom-right corner
+    Vertex v3{ 0.0f,  1.0f,  0.0f,   0.0f, 0.0f, 1.0f,  0.0f, 1.0f }; //  top-left corner
+    Vertex v4{ 1.0f,  1.0f,  0.0f,   1.0f, 1.0f, 0.0f,  1.0f, 1.0f }; //  top-right corner
+
+    //Pushing 1st triangle,
+    mVertices.push_back(v1);
+    mVertices.push_back(v2);
+    mVertices.push_back(v3);
+    mVertices.push_back(v4);
+
+    //Indexes for the two triangles to form a quad
+    mIndices.push_back(0);
+    mIndices.push_back(1);
+    mIndices.push_back(2);
+    mIndices.push_back(2);
+    mIndices.push_back(1);
+    mIndices.push_back(3);
 
     //Temporary scale and positioning
     mMatrix.scale(0.5f);
     mMatrix.translate(0.5f, 0.1f, 0.1f);
 
-    constructPlane();
 }
 
 TriangleSurface::TriangleSurface(const std::string &filename)
@@ -29,27 +48,4 @@ TriangleSurface::TriangleSurface(const std::string &filename)
     inn.close();
 }
 
-void TriangleSurface::constructPlane()
-{
-
-    float dx=2.0;
-    float dy=2.0;
-    mVertices.clear();
-    for (float y=-2.0; y<2.0; y+=dy)
-    {
-        for (float x=-3.0; x<3.0; x+=dx)
-        {
-            float x0=x;
-            float y0=y;
-            float x1=x0+dx;
-            float y1=y0+dy;
-            mVertices.push_back(Vertex{x0, y0, 0, 0, 0, 1, 0, 0});
-            mVertices.push_back(Vertex{x1, y0, 0, 0, 0, 1, 0, 0});
-            mVertices.push_back(Vertex{x0, y1, 0, 0, 0, 1, 0, 0});
-            mVertices.push_back(Vertex{x0, y1, 0, 0, 0, 1, 0, 0});
-            mVertices.push_back(Vertex{x1, y0, 0, 0, 0, 1, 0, 0});
-            mVertices.push_back(Vertex{x1, y1, 0, 0, 0, 1, 0, 0});
-        }
-    }
-}
 

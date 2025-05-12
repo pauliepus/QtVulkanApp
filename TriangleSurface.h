@@ -10,8 +10,6 @@ class TriangleSurface : public VisualObject
 public:
     TriangleSurface();
     TriangleSurface(const std::string& filename);
-    std::vector<Vertex> getVertices();
-    void constructPlane();
 };
 
 

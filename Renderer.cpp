@@ -6,6 +6,7 @@
 #include "WorldAxis.h"
 #include "Triangle.h"
 #include "TriangleSurface.h"
+#include "TriangleSussage.h"
 #include "HeightMap.h"
 #include "stb_image.h"
 #include "ObjMesh.h"
@@ -270,8 +271,8 @@ void Renderer::initResources()
     VisualObject* mSurface;
     VisualObject* mPlayer;
     VisualObject* mNPC;
-    mPlayer = new TriangleSurface("cylinder.txt");
-    mSurface = new TriangleSurface;
+    mPlayer = new TriangleSussage("cylinder.txt");
+    mSurface = new TriangleSussage;
 
 	// Destroying the shader modules, we won't need them anymore after the pipeline is created
     if (vertShaderModule)

@@ -8,8 +8,11 @@
 class TriangleSurface : public VisualObject
 {
 public:
+    float y;
+    float x;
     TriangleSurface();
     TriangleSurface(const std::string& filename);
+    // void constructPlane();
 };
 
 #endif // TRIANGLESURFACE_H

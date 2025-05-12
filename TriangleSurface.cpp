@@ -44,3 +44,4 @@ TriangleSurface::TriangleSurface(const std::string &filename)
     }
     inn.close();
 }
+

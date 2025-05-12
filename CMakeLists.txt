@@ -30,6 +30,20 @@ set(SHADER_FILES
     texture.frag
     texture.vert
 )
+set(ASSET_FILES
+    Assets/cube.obj Assets/cylinder.obj
+    Assets/Heightmap.jpg Assets/hund.bmp Assets/hundA.bmp
+    Assets/mesh.txt
+    Assets/orange.jpg Assets/pink.jpg
+    Assets/quad.txt
+    Assets/sphere.obj
+    Assets/suzanne.obj
+)
+# Asset addition
+
+add_custom_target(Assets
+    SOURCES ${ASSET_FILES}
+)
 
 # Add the shader files to the project
 add_custom_target(Shaders

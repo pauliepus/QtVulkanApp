@@ -7,6 +7,7 @@ VisualObject::VisualObject()
 
 void VisualObject::move(float x, float y, float z)
 {
+    //translate legger til posisjoner, flytter +/-(xyz)
     mMatrix.translate(x, y, z);
 }
 

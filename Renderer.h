@@ -12,27 +12,16 @@ class Renderer : public QVulkanWindowRenderer
 {
 public:
     Renderer(QVulkanWindow *w, bool msaa = false);
-
-    //Initializes the Vulkan resources needed,
-    // the buffers
-    // vertex descriptions for the shaders
-    // making the shaders, etc
     void initResources() override;
 
-    //Set up resources - only MVP-matrix for now:
     void initSwapChainResources() override;
 
-    //Empty for now - needed since we implement QVulkanWindowRenderer
     void releaseSwapChainResources() override;
 
-    //Release Vulkan resources when program ends
-    //Called by Qt
     void releaseResources() override;
 
-    //Render the next frame
     void startNextFrame() override;
 
-    //Get Vulkan info - just for fun
     void getVulkanHWInfo();
 
     std::vector<VisualObject*>& getObjects() { return mObjects; }
